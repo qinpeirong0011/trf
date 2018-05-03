@@ -1,0 +1,3 @@
+adaptive=com.qinpr.trf.common.compiler.support.AdaptiveCompiler
+jdk=com.qinpr.trf.common.compiler.support.JdkCompiler
+javassist=com.qinpr.trf.common.compiler.support.JavassistCompiler
