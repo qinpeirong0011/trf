@@ -3,30 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>trf-config</artifactId>
+        <artifactId>trf-demo</artifactId>
         <groupId>com.qinpr</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.qinpr</groupId>
-    <artifactId>trf-config-spring</artifactId>
+    <artifactId>trf-demo-provider</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>4.2.7.RELEASE</version>
+            <groupId>com.qinpr</groupId>
+            <artifactId>trf-demo-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>4.2.7.RELEASE</version>
-        </dependency>
-        <dependency>
             <groupId>com.qinpr</groupId>
-            <artifactId>trf-config-api</artifactId>
+            <artifactId>trf-config-spring</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

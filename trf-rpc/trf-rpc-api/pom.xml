@@ -3,30 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>trf-config</artifactId>
+        <artifactId>trf-rpc</artifactId>
         <groupId>com.qinpr</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.qinpr</groupId>
-    <artifactId>trf-config-spring</artifactId>
+    <artifactId>trf-rpc-api</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>4.2.7.RELEASE</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>4.2.7.RELEASE</version>
-        </dependency>
-        <dependency>
             <groupId>com.qinpr</groupId>
-            <artifactId>trf-config-api</artifactId>
+            <artifactId>trf-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
