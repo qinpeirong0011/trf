@@ -1,7 +1,7 @@
-package com.alibaba.dubbo.rpc.spi2;
+package com.qinpr.trf.test.spi2;
 
-import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.common.extension.SPI;
+
+import com.qinpr.trf.common.extension.SPI;
 
 /**
  * Created by qinpr on 18/5/2.

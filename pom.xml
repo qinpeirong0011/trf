@@ -13,6 +13,7 @@
         <module>trf-demo</module>
         <module>trf-common</module>
         <module>trf-rpc</module>
+        <module>trf-test</module>
     </modules>
 
 

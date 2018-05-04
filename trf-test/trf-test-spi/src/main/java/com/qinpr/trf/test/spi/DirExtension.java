@@ -1,9 +1,10 @@
-package com.alibaba.dubbo.rpc.spi;
+package com.qinpr.trf.test.spi;
 
-import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.common.extension.Adaptive;
-import com.alibaba.dubbo.common.extension.SPI;
-import com.alibaba.dubbo.rpc.constants.SpiConstants;
+
+import com.qinpr.trf.common.URL;
+import com.qinpr.trf.common.extension.Adaptive;
+import com.qinpr.trf.common.extension.SPI;
+import com.qinpr.trf.test.constants.SpiConstants;
 
 /**
  * Created by qinpr on 18/5/2.

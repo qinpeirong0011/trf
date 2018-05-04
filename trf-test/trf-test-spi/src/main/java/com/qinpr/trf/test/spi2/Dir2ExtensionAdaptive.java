@@ -1,15 +1,16 @@
-package com.alibaba.dubbo.rpc.spi2;
+package com.qinpr.trf.test.spi2;
 
-import com.alibaba.dubbo.common.extension.Adaptive;
-import com.alibaba.dubbo.common.extension.ExtensionLoader;
-import com.alibaba.dubbo.rpc.constants.SpiConstants;
+
+import com.qinpr.trf.common.extension.Adaptive;
+import com.qinpr.trf.common.extension.ExtensionLoader;
+import com.qinpr.trf.test.constants.SpiConstants;
 
 /**
  * Created by qinpr on 18/5/2.
  */
 @Adaptive
 public class Dir2ExtensionAdaptive implements Dir2Extension {
-    @Override
+
     public String sayHello(String name, String type) {
         ExtensionLoader<Dir2Extension> extensionLoader = ExtensionLoader.getExtensionLoader(Dir2Extension.class);
         Dir2Extension dir2Extension = extensionLoader.getDefaultExtension();

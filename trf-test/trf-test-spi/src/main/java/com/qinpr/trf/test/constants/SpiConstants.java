@@ -1,4 +1,4 @@
-package com.alibaba.dubbo.rpc.constants;
+package com.qinpr.trf.test.constants;
 
 /**
  * Created by qinpr on 18/5/2.

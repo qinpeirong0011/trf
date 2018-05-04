@@ -11,6 +11,13 @@
 
     <groupId>com.qinpr</groupId>
     <artifactId>trf-test-spi</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.qinpr</groupId>
+            <artifactId>trf-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 
 </project>
