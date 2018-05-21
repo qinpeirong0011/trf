@@ -2,6 +2,7 @@ package com.qinpr.trf.config.spring.schema;
 
 import com.qinpr.trf.config.ProtocolConfig;
 import com.qinpr.trf.config.RegistryConfig;
+import com.qinpr.trf.config.spring.ServiceBean;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;

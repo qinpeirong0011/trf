@@ -20,4 +20,8 @@ public abstract class AbstractConfig implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
+    protected void appendAnnotation(Class<?> annotationClass, Object annotation) {
+        //todo
+    }
 }
