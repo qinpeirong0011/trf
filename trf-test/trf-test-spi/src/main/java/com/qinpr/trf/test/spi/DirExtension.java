@@ -12,6 +12,6 @@ import com.qinpr.trf.test.constants.SpiConstants;
 @SPI("dirDefault")
 public interface DirExtension {
 
-    @Adaptive({SpiConstants.DIR_DEFAULT, SpiConstants.DIR_FIRST})
+    @Adaptive("dirDefault")
     String sayHello(URL url, String name);
 }

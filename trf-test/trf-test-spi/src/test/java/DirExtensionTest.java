@@ -13,7 +13,7 @@ public class DirExtensionTest {
         DirExtension dirExtension = extensionLoader.getAdaptiveExtension();
 
         HashMap<String, String> parameters = new HashMap<String, String>();
-        parameters.put("dirDefault", "dirFirst");
+        parameters.put("dirDefault", "dirDefault");
 
         URL url = new URL("dubbo", "127.0.0.1", 8089, parameters);
         System.out.println(dirExtension.sayHello(url, "qinpr"));

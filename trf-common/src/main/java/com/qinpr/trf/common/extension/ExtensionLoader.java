@@ -61,7 +61,7 @@ public class ExtensionLoader<T> {
         this.objectFactory = (type == ExtensionFactory.class ? null : ExtensionLoader.getExtensionLoader(ExtensionFactory.class).getAdaptiveExtension());
     }
 
-    public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
+    public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type)  {
         if (type == null) {
             throw new IllegalArgumentException("Extension type == null");
         }
@@ -116,7 +116,8 @@ public class ExtensionLoader<T> {
 
     private T createAdaptiveExtension() {
         try {
-            return injectExtension((T) getAdaptiveExtensionClass().newInstance());
+            return (T) getAdaptiveExtensionClass().newInstance();
+//            return injectExtension((T) getAdaptiveExtensionClass().newInstance());
         } catch (Exception e) {
             throw new IllegalStateException("Can not create adaptive extension " + type + ", cause: " + e.getMessage(), e);
         }
