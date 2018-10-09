@@ -1,1 +1,1 @@
-http\://dubbo.apache.org/schema/dubbo=com.qinpr.trf.config.spring.schema.TrfNamespaceHandler
+http\://www.test.com/schema/trf=com.qinpr.trf.config.spring.schema.TrfNamespaceHandler
