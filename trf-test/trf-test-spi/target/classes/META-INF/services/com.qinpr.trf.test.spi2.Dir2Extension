@@ -1,0 +1,3 @@
+adaptive=com.qinpr.trf.test.spi2.Dir2ExtensionAdaptive
+dir2Default=com.qinpr.trf.test.spi2.Dir2ExtensionDefaultImpl
+dir2First=com.qinpr.trf.test.spi2.Dir2ExtensionFirstImpl

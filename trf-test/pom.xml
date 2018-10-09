@@ -18,13 +18,6 @@
     </modules>
 
     <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.qinpr</groupId>
-                <artifactId>trf-demo-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-        </dependencies>
     </dependencyManagement>
 
 
