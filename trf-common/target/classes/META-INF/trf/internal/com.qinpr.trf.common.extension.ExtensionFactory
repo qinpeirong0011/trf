@@ -1,2 +1,0 @@
-adaptive=com.qinpr.trf.common.extension.factory.AdaptiveExtensionFactory
-spi=com.qinpr.trf.common.extension.factory.SpiExtensionFactory
