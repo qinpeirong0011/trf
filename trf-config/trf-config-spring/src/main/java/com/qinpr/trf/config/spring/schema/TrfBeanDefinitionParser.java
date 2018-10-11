@@ -1,42 +1,47 @@
 package com.qinpr.trf.config.spring.schema;
 
-import com.qinpr.trf.config.RegistryConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 /**
- * Created by qinpr on 2018/10/8.
+ * Created by qinpr on 2018/10/9.
  */
-public class TrfBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+public class TrfBeanDefinitionParser implements BeanDefinitionParser {
+    private final Class<?> beanClass;
+    private final boolean required;
 
-    @Override
-    protected Class<?> getBeanClass(Element element) {
-        return RegistryConfig.class;
+    public TrfBeanDefinitionParser(Class<?> beanClass, boolean required) {
+        this.beanClass = beanClass;
+        this.required = required;
     }
 
-    @Override
-    protected void doParse(Element element, BeanDefinitionBuilder builder) {
+    public BeanDefinition parse(Element element, ParserContext parserContext) {
+        return parse(element, parserContext, beanClass, required);
+    }
+
+    private static BeanDefinition parse(Element element, ParserContext parserContext, Class<?> beanClass, boolean required) {
+        RootBeanDefinition beanDefinition = new RootBeanDefinition();
+        beanDefinition.setBeanClass(beanClass);
+        beanDefinition.setLazyInit(false);
+
         String id = element.getAttribute("id");
-        String protocol = element.getAttribute("protocol");
-        String address = element.getAttribute("address");
-        String group = element.getAttribute("group");
+//        String protocol = element.getAttribute("protocol");
+//        String address = element.getAttribute("address");
+//        String group = element.getAttribute("group");
 
-        if(StringUtils.hasText(id))
-            builder.addPropertyValue("id", id);
+        parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
+//        parserContext.getRegistry().registerBeanDefinition(protocol, beanDefinition);
+//        parserContext.getRegistry().registerBeanDefinition(address, beanDefinition);
+//        parserContext.getRegistry().registerBeanDefinition(group, beanDefinition);
 
-        if(StringUtils.hasText(protocol))
-            builder.addPropertyValue("protocol", protocol);
+        beanDefinition.getPropertyValues().addPropertyValue("id", id);
+//        beanDefinition.getPropertyValues().addPropertyValue("protocol", protocol);
+//        beanDefinition.getPropertyValues().addPropertyValue("address", address);
+//        beanDefinition.getPropertyValues().addPropertyValue("group", group);
 
-        if(StringUtils.hasText(address))
-            builder.addPropertyValue("address", address);
-
-        if(StringUtils.hasText(group))
-            builder.addPropertyValue("group", group);
+        return null;
     }
 }

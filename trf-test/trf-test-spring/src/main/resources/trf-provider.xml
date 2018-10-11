@@ -8,7 +8,13 @@
 	        http://www.test.com/schema/trf
             http://www.test.com/schema/trf.xsd ">
 
-    <trf:registry id="test" protocol="zookeeper_tujia" address="N/A" group="trf" />
+    <trf:application id="test-application" name="test-application"/>
+
+    <trf:registry id="test-registry" protocol="zookeeper_tujia" address="N/A" group="trf" />
+
+    <trf:protocol id="test-protocol" name="trf" port="20777"/>
+
+    <trf:provider id="test-provider" executes="200" threads="200" token="true" timeout="3000"/>
 
 
 </beans>
