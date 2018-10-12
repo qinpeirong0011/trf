@@ -5,16 +5,14 @@ package com.qinpr.trf.config;
  */
 public class ProviderConfig extends AbstractServiceConfig {
 
-    // delay service exporting
-    protected Integer delay;
+    // thread pool size (fixed size)
+    private Integer threads;
 
-    @Override
-    public Integer getDelay() {
-        return delay;
+    public Integer getThreads() {
+        return threads;
     }
 
-    @Override
-    public void setDelay(Integer delay) {
-        this.delay = delay;
+    public void setThreads(Integer threads) {
+        this.threads = threads;
     }
 }

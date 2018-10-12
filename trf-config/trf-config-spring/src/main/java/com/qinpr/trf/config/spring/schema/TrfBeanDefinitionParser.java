@@ -6,12 +6,18 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Created by qinpr on 2018/10/9.
  */
 public class TrfBeanDefinitionParser implements BeanDefinitionParser {
     private final Class<?> beanClass;
     private final boolean required;
+
+    public static Map<Class<?>, AbstractTrfBeanParseHander> parseHolder = new ConcurrentHashMap<Class<?>, AbstractTrfBeanParseHander>(10);
 
     public TrfBeanDefinitionParser(Class<?> beanClass, boolean required) {
         this.beanClass = beanClass;
@@ -23,25 +29,11 @@ public class TrfBeanDefinitionParser implements BeanDefinitionParser {
     }
 
     private static BeanDefinition parse(Element element, ParserContext parserContext, Class<?> beanClass, boolean required) {
-        RootBeanDefinition beanDefinition = new RootBeanDefinition();
-        beanDefinition.setBeanClass(beanClass);
-        beanDefinition.setLazyInit(false);
-
-        String id = element.getAttribute("id");
-//        String protocol = element.getAttribute("protocol");
-//        String address = element.getAttribute("address");
-//        String group = element.getAttribute("group");
-
-        parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
-//        parserContext.getRegistry().registerBeanDefinition(protocol, beanDefinition);
-//        parserContext.getRegistry().registerBeanDefinition(address, beanDefinition);
-//        parserContext.getRegistry().registerBeanDefinition(group, beanDefinition);
-
-        beanDefinition.getPropertyValues().addPropertyValue("id", id);
-//        beanDefinition.getPropertyValues().addPropertyValue("protocol", protocol);
-//        beanDefinition.getPropertyValues().addPropertyValue("address", address);
-//        beanDefinition.getPropertyValues().addPropertyValue("group", group);
-
+        AbstractTrfBeanParseHander parseHander = parseHolder.get(beanClass);
+        if (parseHander != null) {
+            parseHander.setParseHandler(element, parserContext, beanClass);
+            parseHander.parse();
+        }
         return null;
     }
 }

@@ -36,9 +36,9 @@ public class ConsumerConfiguration {
 
     @Test
     public void init() {
-        System.out.println(testApplicationConfig.getId());
-        System.out.println(testRegistryConfig.getId());
-        System.out.println(testProtocolConfig.getId());
-        System.out.println(testProviderConfig.getId());
+        System.out.println(testApplicationConfig.getName());
+        System.out.println(testRegistryConfig.getAddress());
+        System.out.println(testProtocolConfig.getName());
+        System.out.println(testProviderConfig.getThreads());
     }
 }
