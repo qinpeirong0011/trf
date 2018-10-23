@@ -200,7 +200,7 @@ public abstract class AbstractInterfaceConfig extends  AbstractMethodConfig {
 
     protected List<URL> loadRegistries(boolean provider) {
         List<URL> registryList = new ArrayList<URL>();
-        if (registries != null && registries.isEmpty()) {
+        if (registries != null && !registries.isEmpty()) {
             for (RegistryConfig config : registries) {
                 String address = config.getAddress();
                 if (address == null || address.length() ==0) {

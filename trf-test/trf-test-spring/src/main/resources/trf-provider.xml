@@ -10,7 +10,7 @@
 
     <trf:application id="test-application" name="test-application"/>
 
-    <trf:registry id="test-registry" protocol="zookeeper_tujia" address="N/A" group="trf" />
+    <trf:registry id="test-registry" protocol="zookeeper_tujia" address="10.2.74.18:2181" group="trf" />
 
     <trf:protocol id="test-protocol" name="trf" port="20777"/>
 

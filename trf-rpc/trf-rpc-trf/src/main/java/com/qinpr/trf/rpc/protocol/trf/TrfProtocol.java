@@ -16,6 +16,7 @@ public class TrfProtocol extends AbstractProtocol {
     }
 
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
+        System.out.println("trf-protocol-test");
         return null;
     }
 

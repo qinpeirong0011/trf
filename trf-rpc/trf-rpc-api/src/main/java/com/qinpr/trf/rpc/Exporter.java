@@ -5,5 +5,8 @@ package com.qinpr.trf.rpc;
  */
 public interface Exporter<T> {
 
+    Invoker<T> getInvoker();
+
+    void unexport();
 
 }

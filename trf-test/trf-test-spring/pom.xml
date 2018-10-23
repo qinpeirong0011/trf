@@ -48,6 +48,16 @@
             <artifactId>trf-demo-provider</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.qinpr</groupId>
+            <artifactId>trf-rpc-trf</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.qinpr</groupId>
+            <artifactId>trf-rpc-injvm</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

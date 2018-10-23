@@ -18,7 +18,7 @@ public class InjvmProtocol extends AbstractProtocol implements Protocol {
     }
 
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
-        return null;
+        return new InjvmExporter<T>(invoker, invoker.getUrl().getServiceKey(), exporterMap);
     }
 
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {

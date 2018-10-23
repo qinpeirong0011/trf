@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
  */
 public class NetUtils {
 
+    public static final String LOCALHOST = "127.0.0.1";
     private static final Pattern LOCAL_IP_PATTERN = Pattern.compile("127(\\.\\d{1,3}){3}$");
 
     /**

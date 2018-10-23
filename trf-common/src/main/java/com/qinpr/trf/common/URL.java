@@ -3,10 +3,12 @@ package com.qinpr.trf.common;
 import com.qinpr.trf.common.utils.CollectionUtils;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.util.*;
 
 /**
  * Created by qinpr on 18/5/3.
@@ -29,6 +31,16 @@ public final class URL implements Serializable {
     private final String path;
 
     private final Map<String, String> parameters;
+
+    private volatile transient String ip;
+
+    private volatile transient String full;
+
+    private volatile transient String identity;
+
+    private volatile transient String parameter;
+
+    private volatile transient String string;
 
 
     protected URL() {
@@ -247,5 +259,157 @@ public final class URL implements Serializable {
         Map<String, String> map = new HashMap<String, String>(getParameters());
         map.put(key, value);
         return new URL(protocol, username, password, host, port, path, map);
+    }
+
+    public String toFullString() {
+        if (full != null) {
+            return full;
+        }
+        return full = buildString(true, true);
+    }
+
+    private String buildString(boolean appendUser, boolean appendParameter, String... parameters) {
+        return buildString(appendUser, appendParameter, false, false, parameters);
+    }
+
+    private String buildString(boolean appendUser, boolean appendParameter, boolean useIP, boolean useService, String... parameters) {
+        StringBuilder buf = new StringBuilder();
+        if (protocol != null && protocol.length() > 0) {
+            buf.append(protocol);
+            buf.append("://");
+        }
+        if (appendUser && username != null && username.length() > 0) {
+            buf.append(username);
+            if (password != null && password.length() > 0) {
+                buf.append(":");
+                buf.append(password);
+            }
+            buf.append("@");
+        }
+        String host;
+        if (useIP) {
+            host = getIp();
+        } else {
+            host = getHost();
+        }
+        if (host != null && host.length() > 0) {
+            buf.append(host);
+            if (port > 0) {
+                buf.append(":");
+                buf.append(port);
+            }
+        }
+        String path;
+        if (useService) {
+            path = getServiceKey();
+        } else {
+            path = getPath();
+        }
+        if (path != null && path.length() > 0) {
+            buf.append("/");
+            buf.append(path);
+        }
+        if (appendParameter) {
+            buildParameters(buf, true, parameters);
+        }
+        return buf.toString();
+    }
+
+    private void buildParameters(StringBuilder buf, boolean concat, String[] parameters) {
+        if (getParameters() != null && getParameters().size() > 0) {
+            List<String> includes = (parameters == null || parameters.length == 0 ? null : Arrays.asList(parameters));
+            boolean first = true;
+            for (Map.Entry<String, String> entry : new TreeMap<String, String>(getParameters()).entrySet()) {
+                if (entry.getKey() != null && entry.getKey().length() > 0
+                        && (includes == null || includes.contains(entry.getKey()))) {
+                    if (first) {
+                        if (concat) {
+                            buf.append("?");
+                        }
+                        first = false;
+                    } else {
+                        buf.append("&");
+                    }
+                    buf.append(entry.getKey());
+                    buf.append("=");
+                    buf.append(entry.getValue() == null ? "" : entry.getValue().trim());
+                }
+            }
+        }
+    }
+
+    public String getIp() {
+        if (ip == null) {
+            try {
+                ip = InetAddress.getByName(host).getHostAddress();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
+        return ip;
+    }
+
+    public String getServiceKey() {
+        String inf = getServiceInterface();
+        if (inf == null) return null;
+        StringBuilder buf = new StringBuilder();
+        String group = getParameter(Constants.GROUP_KEY);
+        if (group != null && group.length() > 0) {
+            buf.append(group).append("/");
+        }
+        buf.append(inf);
+        String version = getParameter(Constants.VERSION_KEY);
+        if (version != null && version.length() > 0) {
+            buf.append(":").append(version);
+        }
+        return buf.toString();
+    }
+
+    public String getServiceInterface() {
+        return getParameter(Constants.INTERFACE_KEY, path);
+    }
+
+    public URL setHost(String host) {
+        return new URL(protocol, username, password, host, port, path, getParameters());
+    }
+
+    public URL setPort(int port) {
+        return new URL(protocol, username, password, host, port, path, getParameters());
+    }
+
+    public URL addParameterIfAbsent(String key, String value) {
+        if (key == null || key.length() == 0
+                || value == null || value.length() == 0) {
+            return this;
+        }
+        if (hasParameter(key)) {
+            return this;
+        }
+        Map<String, String> map = new HashMap<String, String>(getParameters());
+        map.put(key, value);
+        return new URL(protocol, username, password, host, port, path, map);
+    }
+
+    public boolean hasParameter(String key) {
+        String value = getParameter(key);
+        return value != null && value.length() > 0;
+    }
+
+    public URL addParameterAndEncoded(String key, String value) {
+        if (value == null || value.length() == 0) {
+            return this;
+        }
+        return addParameter(key, encode(value));
+    }
+
+    public static String encode(String value) {
+        if (value == null || value.length() == 0) {
+            return "";
+        }
+        try {
+            return URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 }

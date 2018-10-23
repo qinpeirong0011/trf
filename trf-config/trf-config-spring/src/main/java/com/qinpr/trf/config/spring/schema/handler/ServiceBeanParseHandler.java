@@ -22,6 +22,13 @@ public class ServiceBeanParseHandler extends AbstractTrfBeanParseHander<ServiceB
 
         beanDefinition.getPropertyValues().addPropertyValue("id", id);
         beanDefinition.getPropertyValues().addPropertyValue("interface", interfaceName);
+        beanDefinition.getPropertyValues().addPropertyValue("path", interfaceName);
+        try {
+            Class<?> interfaceClass = Class.forName(interfaceName);
+            beanDefinition.getPropertyValues().addPropertyValue("interfaceClass", interfaceClass);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         beanDefinition.getPropertyValues().addPropertyValue("ref", new RuntimeBeanReference(ref));
         beanDefinition.getPropertyValues().addPropertyValue("version", version);
         beanDefinition.getPropertyValues().addPropertyValue("group", group);

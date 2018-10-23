@@ -20,6 +20,7 @@ package com.qinpr.trf.common.utils;
 import com.qinpr.trf.common.io.UnsafeStringWriter;
 
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -99,5 +100,19 @@ public final class StringUtils {
             return false;
         return INT_PATTERN.matcher(str).matches();
     }
+
+    public static String join(Collection<String> coll, String split) {
+        if (coll.isEmpty()) return "";
+
+        StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        for (String s : coll) {
+            if (isFirst) isFirst = false;
+            else sb.append(split);
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
 
 }
