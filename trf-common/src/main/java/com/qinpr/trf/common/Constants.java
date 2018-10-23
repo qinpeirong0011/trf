@@ -633,8 +633,11 @@ public class Constants {
 
     public static final boolean DEFAULT_HESSIAN_OVERLOAD_METHOD = false;
 
+    public static final String INTERFACES = "interfaces";
     /*
      * private Constants(){ }
      */
+    public static final String FUTURE_GENERATED_KEY = "future_generated";
+    public static final String FUTURE_RETURNTYPE_KEY = "future_returntype";
 
 }

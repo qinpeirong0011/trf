@@ -1,0 +1,2 @@
+jdk=com.qinpr.trf.rpc.proxy.jdk.JdkProxyFactory
+javassist=com.qinpr.trf.rpc.proxy.javassist.JavassistProxyFactory

@@ -17,7 +17,6 @@ public class ApplicationConfigParseHander extends AbstractTrfBeanParseHander<App
         String name = element.getAttribute("name");
 
         parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(name, beanDefinition);
 
         beanDefinition.getPropertyValues().addPropertyValue("id", id);
         beanDefinition.getPropertyValues().addPropertyValue("name", name);

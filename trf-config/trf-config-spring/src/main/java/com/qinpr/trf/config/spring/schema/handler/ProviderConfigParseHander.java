@@ -20,10 +20,6 @@ public class ProviderConfigParseHander extends AbstractTrfBeanParseHander<Provid
         String timeout = element.getAttribute("timeout");
 
         parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(executes, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(threads, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(token, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(timeout, beanDefinition);
 
         beanDefinition.getPropertyValues().addPropertyValue("id", id);
         beanDefinition.getPropertyValues().addPropertyValue("executes", executes);

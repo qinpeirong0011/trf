@@ -21,9 +21,6 @@ public class RegistryConfigParseHander extends AbstractTrfBeanParseHander<Regist
         String group = element.getAttribute("group");
 
         parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(protocol, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(address, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(group, beanDefinition);
 
         beanDefinition.getPropertyValues().addPropertyValue("id", id);
         beanDefinition.getPropertyValues().addPropertyValue("protocol", protocol);

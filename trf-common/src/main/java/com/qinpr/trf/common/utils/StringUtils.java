@@ -86,7 +86,18 @@ public final class StringUtils {
         return map;
     }
 
+    public static int parseInteger(String str) {
+        if (!isInteger(str))
+            return 0;
+        return Integer.parseInt(str);
+    }
 
+    private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 
+    public static boolean isInteger(String str) {
+        if (str == null || str.length() == 0)
+            return false;
+        return INT_PATTERN.matcher(str).matches();
+    }
 
 }

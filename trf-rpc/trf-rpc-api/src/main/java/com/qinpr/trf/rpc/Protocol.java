@@ -1,9 +1,9 @@
 package com.qinpr.trf.rpc;
 
+import com.qinpr.trf.common.URL;
 import com.qinpr.trf.common.extension.Adaptive;
 import com.qinpr.trf.common.extension.SPI;
 
-import java.net.URL;
 
 /**
  * Created by qinpr on 18/4/27.

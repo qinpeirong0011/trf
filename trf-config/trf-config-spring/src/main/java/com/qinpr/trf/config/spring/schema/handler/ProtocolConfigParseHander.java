@@ -19,8 +19,6 @@ public class ProtocolConfigParseHander extends AbstractTrfBeanParseHander<Protoc
         String port = element.getAttribute("port");
 
         parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(name, beanDefinition);
-        parserContext.getRegistry().registerBeanDefinition(port, beanDefinition);
 
         beanDefinition.getPropertyValues().addPropertyValue("id", id);
         beanDefinition.getPropertyValues().addPropertyValue("name", name);

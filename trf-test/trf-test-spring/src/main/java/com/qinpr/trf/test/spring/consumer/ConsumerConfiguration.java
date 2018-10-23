@@ -34,6 +34,7 @@ public class ConsumerConfiguration {
     @Qualifier("test-provider")
     private ProviderConfig testProviderConfig;
 
+
     @Test
     public void init() {
         System.out.println(testApplicationConfig.getName());

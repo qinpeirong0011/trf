@@ -7,7 +7,7 @@ import java.util.Map;
  */
 public class RegistryConfig extends AbstractConfig {
     private static final long serialVersionUID = -3395736731086839577L;
-
+    public static final String NO_AVAILABLE = "N/A";
     // register center address
     private String address;
 

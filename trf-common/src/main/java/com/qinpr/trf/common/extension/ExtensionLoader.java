@@ -102,7 +102,6 @@ public class ExtensionLoader<T> {
                             createAdaptiveInstanceError = t;
                             throw new IllegalStateException("fail to create adaptive instance: " + t.toString(), t);
                         }
-
                     }
                 }
             } else {
@@ -133,6 +132,7 @@ public class ExtensionLoader<T> {
 
     private Class<?> createAdaptiveExtensionClass() {
         String code = createAdaptiveExtensionClassCode();
+        System.out.println(code);
         ClassLoader classLoader = findClassLoader();
         Compiler compiler = ExtensionLoader.getExtensionLoader(Compiler.class).getAdaptiveExtension();
         return compiler.compile(code, classLoader);
@@ -365,7 +365,7 @@ public class ExtensionLoader<T> {
 
             }
         } catch (Exception e) {
-
+           e.printStackTrace();
         }
         return instance;
     }

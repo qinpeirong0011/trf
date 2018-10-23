@@ -43,6 +43,11 @@
             <artifactId>trf-config-spring</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.qinpr</groupId>
+            <artifactId>trf-demo-provider</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -1,5 +1,6 @@
 package com.qinpr.trf.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -128,6 +129,14 @@ public abstract class AbstractServiceConfig extends AbstractInterfaceConfig {
 
     public void setAccesslog(String accesslog) {
         this.accesslog = accesslog;
+    }
+
+    public ProtocolConfig getProtocol() {
+        return protocols == null || protocols.isEmpty() ? null : protocols.get(0);
+    }
+
+    public void setProtocol(ProtocolConfig protocol) {
+        this.protocols = Arrays.asList(protocol);
     }
 
     public List<ProtocolConfig> getProtocols() {

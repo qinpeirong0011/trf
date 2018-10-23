@@ -16,5 +16,8 @@
 
     <trf:provider id="test-provider" executes="200" threads="200" token="true" timeout="3000"/>
 
+    <bean id="demoServiceTest" class="com.qinpr.trf.demo.provider.DemoServiceImpl"/>
+
+    <trf:service id="test-service" interface="com.qinpr.trf.demo.DemoService" ref="demoServiceTest" version="1.0" protocol="test-protocol" group="test-group"/>
 
 </beans>

@@ -13,6 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>trf-rpc-api</module>
+        <module>trf-rpc-injvm</module>
+        <module>trf-rpc-trf</module>
     </modules>
 
     
