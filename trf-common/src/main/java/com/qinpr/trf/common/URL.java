@@ -4,11 +4,9 @@ import com.qinpr.trf.common.utils.CollectionUtils;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by qinpr on 18/5/3.
@@ -41,6 +39,9 @@ public final class URL implements Serializable {
     private volatile transient String parameter;
 
     private volatile transient String string;
+
+    //cache
+    private volatile transient Map<String, Number> numbers;
 
 
     protected URL() {
@@ -411,5 +412,63 @@ public final class URL implements Serializable {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    public URL removeParameters(String... keys) {
+        if (keys == null || keys.length == 0) {
+            return this;
+        }
+        Map<String, String> map = new HashMap<String, String>(getParameters());
+        for (String key : keys) {
+            map.remove(key);
+        }
+        if (map.size() == getParameters().size()) {
+            return this;
+        }
+        return new URL(protocol, username, password, host, port, path, map);
+    }
+
+    public String getParameterAndDecoded(String key) {
+        return getParameterAndDecoded(key, null);
+    }
+
+    public String getParameterAndDecoded(String key, String defaultValue) {
+        return decode(getParameter(key, defaultValue));
+    }
+
+    public static String decode(String value) {
+        if (value == null || value.length() == 0) {
+            return "";
+        }
+        try {
+            return URLDecoder.decode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public int getParameter(String key, int defaultValue) {
+        Number n = getNumbers().get(key);
+        if (n != null) {
+            return n.intValue();
+        }
+        String value = getParameter(key);
+        if (value == null || value.length() == 0) {
+            return defaultValue;
+        }
+        int i = Integer.parseInt(value);
+        getNumbers().put(key, i);
+        return i;
+    }
+
+    private Map<String, Number> getNumbers() {
+        if (numbers == null) { // concurrent initialization is tolerant
+            numbers = new ConcurrentHashMap<String, Number>();
+        }
+        return numbers;
+    }
+
+    public String getAddress() {
+        return port <= 0 ? host : host + ":" + port;
     }
 }

@@ -10,6 +10,8 @@ public abstract class AbstractExporter<T> implements Exporter {
 
     private final Invoker<T> invoker;
 
+    private volatile boolean unexported = false;
+
     public AbstractExporter(Invoker<T> invoker) {
         if (invoker == null)
             throw new IllegalStateException("service invoker == null");
@@ -18,5 +20,17 @@ public abstract class AbstractExporter<T> implements Exporter {
         if (invoker.getUrl() == null)
             throw new IllegalStateException("service url == null");
         this.invoker = invoker;
+    }
+
+    public Invoker getInvoker() {
+        return invoker;
+    }
+
+    public void unexport() {
+        if (unexported) {
+            return;
+        }
+        unexported = true;
+        getInvoker().destroy();
     }
 }

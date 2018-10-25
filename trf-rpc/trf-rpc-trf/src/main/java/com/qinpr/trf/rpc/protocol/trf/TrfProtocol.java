@@ -1,10 +1,12 @@
 package com.qinpr.trf.rpc.protocol.trf;
 
+import com.qinpr.trf.common.Constants;
 import com.qinpr.trf.common.URL;
 import com.qinpr.trf.rpc.Exporter;
 import com.qinpr.trf.rpc.Invoker;
 import com.qinpr.trf.rpc.RpcException;
 import com.qinpr.trf.rpc.protocol.AbstractProtocol;
+import org.omg.PortableInterceptor.INACTIVE;
 
 
 /**
@@ -16,8 +18,20 @@ public class TrfProtocol extends AbstractProtocol {
     }
 
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
-        System.out.println("trf-protocol-test");
-        return null;
+        URL url = invoker.getUrl();
+        String key = serviceKey(url);
+        TrfExporter<T> exporter = new TrfExporter<T>(invoker, key, exporterMap);
+        exporterMap.put(key, exporter);
+        openServer(url);
+        return exporter;
+    }
+
+    private void openServer(URL url) {
+        String key = url.getAddress();
+        boolean isServer = url.getParameter(Constants.IS_SERVER_KEY, true);
+        if (isServer) {
+
+        }
     }
 
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
@@ -26,5 +40,11 @@ public class TrfProtocol extends AbstractProtocol {
 
     public void destroy() {
 
+    }
+
+    protected static String serviceKey(URL url) {
+        int port = url.getParameter(Constants.BIND_PORT_KEY, url.getPort());
+        return serviceKey(port, url.getPath(), url.getParameter(Constants.VERSION_KEY),
+                url.getParameter(Constants.GROUP_KEY));
     }
 }
