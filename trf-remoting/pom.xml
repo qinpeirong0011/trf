@@ -10,12 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.qinpr</groupId>
-    <artifactId>trf-registry</artifactId>
+    <artifactId>trf-remoting</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>trf-registry-api</module>
-        <module>trf-registry-zookeeper</module>
-        <module>trf-registry-multicast</module>
+        <module>trf-remoting-zookeeper</module>
     </modules>
 
 

@@ -1,16 +1,18 @@
 package com.qinpr.trf.registry.integration;
 
 import com.qinpr.trf.common.URL;
-import com.qinpr.trf.rpc.Exporter;
-import com.qinpr.trf.rpc.Invoker;
-import com.qinpr.trf.rpc.Protocol;
-import com.qinpr.trf.rpc.RpcException;
+import com.qinpr.trf.registry.RegistryFactory;
+import com.qinpr.trf.rpc.*;
 
 
 /**
  * Created by qinpr on 2018/10/18.
  */
 public class RegistryProtocol implements Protocol {
+
+    private Protocol protocol;
+    private RegistryFactory registryFactory;
+
     public int getDefaultPort() {
         return 0;
     }
@@ -25,5 +27,13 @@ public class RegistryProtocol implements Protocol {
 
     public void destroy() {
 
+    }
+
+    public void setProtocol(Protocol protocol) {
+        this.protocol = protocol;
+    }
+
+    public void setRegistryFactory(RegistryFactory registryFactory) {
+        this.registryFactory = registryFactory;
     }
 }

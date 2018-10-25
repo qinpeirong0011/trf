@@ -15,6 +15,7 @@
         <module>trf-rpc</module>
         <module>trf-test</module>
         <module>trf-registry</module>
+        <module>trf-remoting</module>
     </modules>
 
 

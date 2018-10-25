@@ -3,20 +3,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>trf-parent</artifactId>
+        <artifactId>trf-registry</artifactId>
         <groupId>com.qinpr</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.qinpr</groupId>
-    <artifactId>trf-registry</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>trf-registry-api</module>
-        <module>trf-registry-zookeeper</module>
-        <module>trf-registry-multicast</module>
-    </modules>
+    <artifactId>trf-registry-multicast</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.qinpr</groupId>
+            <artifactId>trf-registry-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 
 </project>

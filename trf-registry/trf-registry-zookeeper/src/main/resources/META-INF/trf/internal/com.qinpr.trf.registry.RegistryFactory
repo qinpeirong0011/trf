@@ -1,0 +1,1 @@
+zookeeper=com.qinpr.trf.registry.zookeeper.ZookeeperRegistryFactory

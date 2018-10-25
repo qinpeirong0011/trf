@@ -1,5 +1,7 @@
 package com.qinpr.trf.registry;
 
+import com.qinpr.trf.common.URL;
+import com.qinpr.trf.common.extension.Adaptive;
 import com.qinpr.trf.common.extension.SPI;
 
 /**
@@ -7,4 +9,7 @@ import com.qinpr.trf.common.extension.SPI;
  */
 @SPI("trf")
 public interface RegistryFactory {
+
+    @Adaptive({"protocol"})
+    Registry getRegistry(URL url);
 }
