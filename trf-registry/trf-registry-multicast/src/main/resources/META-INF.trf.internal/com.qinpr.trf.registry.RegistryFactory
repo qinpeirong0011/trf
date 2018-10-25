@@ -1,1 +1,1 @@
-multicast=com.qinpr.trf.registry.multicast.MulticastRegistryFactory
+zookeeper=com.qinpr.trf.registry.multicast.MulticastRegistryFactory
