@@ -18,5 +18,10 @@
             <artifactId>trf-rpc-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.qinpr</groupId>
+            <artifactId>trf-remoting-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
