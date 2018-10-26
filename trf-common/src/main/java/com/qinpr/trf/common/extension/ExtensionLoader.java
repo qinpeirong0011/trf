@@ -132,7 +132,6 @@ public class ExtensionLoader<T> {
 
     private Class<?> createAdaptiveExtensionClass() {
         String code = createAdaptiveExtensionClassCode();
-        System.out.println(code);
         ClassLoader classLoader = findClassLoader();
         Compiler compiler = ExtensionLoader.getExtensionLoader(Compiler.class).getAdaptiveExtension();
         return compiler.compile(code, classLoader);

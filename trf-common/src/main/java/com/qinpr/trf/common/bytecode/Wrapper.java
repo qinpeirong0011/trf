@@ -346,5 +346,4 @@ public abstract class Wrapper {
         return pn.length() == 1 || Character.isLowerCase(pn.charAt(1)) ? Character.toLowerCase(pn.charAt(0)) + pn.substring(1) : pn;
     }
 
-
 }

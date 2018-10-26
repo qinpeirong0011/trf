@@ -68,6 +68,16 @@
             <artifactId>trf-registry-zookeeper</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.qinpr</groupId>
+            <artifactId>trf-remoting-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.qinpr</groupId>
+            <artifactId>trf-remoting-netty</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
