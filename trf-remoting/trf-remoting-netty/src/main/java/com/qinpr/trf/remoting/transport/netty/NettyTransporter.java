@@ -8,8 +8,7 @@ import com.qinpr.trf.remoting.*;
  */
 public class NettyTransporter implements Transporter {
     public Server bind(URL url, ChannelHandler handler) throws RemotingException {
-        System.out.println("netty-transport--");
-        return null;
+        return new NettyServer(url, handler);
     }
 
     public Client connect(URL url, ChannelHandler handler) throws RemotingException {

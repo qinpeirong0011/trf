@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
+
 /**
  * Created by qinpr on 2018/10/9.
  */
@@ -36,10 +38,11 @@ public class ConsumerConfiguration {
 
 
     @Test
-    public void init() {
+    public void init() throws IOException {
         System.out.println(testApplicationConfig.getName());
         System.out.println(testRegistryConfig.getAddress());
         System.out.println(testProtocolConfig.getName());
         System.out.println(testProviderConfig.getThreads());
+        System.in.read();
     }
 }

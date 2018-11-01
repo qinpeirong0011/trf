@@ -1,1 +1,1 @@
-netty3=com.qinpr.trf.remoting.transport.netty.NettyTransporter
+netty=com.qinpr.trf.remoting.transport.netty.NettyTransporter

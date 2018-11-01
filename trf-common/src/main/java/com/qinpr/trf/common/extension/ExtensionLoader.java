@@ -646,6 +646,26 @@ public class ExtensionLoader<T> {
         return Collections.unmodifiableSet(new TreeSet<String>(clazzes.keySet()));
     }
 
+    public boolean hasExtension(String name) {
+        if (name == null || name.length() == 0)
+            throw new IllegalArgumentException("Extension name == null");
+        try {
+            this.getExtensionClass(name);
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
 
+    private Class<?> getExtensionClass(String name) {
+        if (type == null)
+            throw new IllegalArgumentException("Extension type == null");
+        if (name == null)
+            throw new IllegalArgumentException("Extension name == null");
+        Class<?> clazz = getExtensionClasses().get(name);
+        if (clazz == null)
+            throw new IllegalStateException("No such extension \"" + name + "\" for " + type.getName() + "!");
+        return clazz;
+    }
 
 }
