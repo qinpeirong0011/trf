@@ -59,9 +59,9 @@ public class Constants {
 
     public static final String DYNAMIC_KEY = "dynamic";
 
-    public static final String DUBBO_PROPERTIES_KEY = "dubbo.properties.file";
+    public static final String trf_PROPERTIES_KEY = "trf.properties.file";
 
-    public static final String DEFAULT_DUBBO_PROPERTIES = "dubbo.properties";
+    public static final String DEFAULT_trf_PROPERTIES = "trf.properties";
 
     public static final String SENT_KEY = "sent";
 
@@ -81,11 +81,11 @@ public class Constants {
 
     public static final String DEFAULT_CLUSTER = "failover";
 
-    public static final String DEFAULT_DIRECTORY = "dubbo";
+    public static final String DEFAULT_DIRECTORY = "trf";
 
     public static final String DEFAULT_LOADBALANCE = "random";
 
-    public static final String DEFAULT_PROTOCOL = "dubbo";
+    public static final String DEFAULT_PROTOCOL = "trf";
 
     public static final String DEFAULT_EXCHANGER = "header";
 
@@ -95,7 +95,7 @@ public class Constants {
 
     public static final String DEFAULT_REMOTING_CLIENT = "netty";
 
-    public static final String DEFAULT_REMOTING_CODEC = "dubbo";
+    public static final String DEFAULT_REMOTING_CODEC = "trf";
 
     public static final String DEFAULT_REMOTING_SERIALIZATION = "hessian2";
 
@@ -111,7 +111,7 @@ public class Constants {
 
     public static final int DEFAULT_FORKS = 2;
 
-    public static final String DEFAULT_THREAD_NAME = "Dubbo";
+    public static final String DEFAULT_THREAD_NAME = "trf";
 
     public static final int DEFAULT_CORE_THREADS = 0;
 
@@ -171,7 +171,7 @@ public class Constants {
 
     public static final String CONSUMER_SIDE = "consumer";
 
-    public static final String DEFAULT_REGISTRY = "dubbo";
+    public static final String DEFAULT_REGISTRY = "trf";
 
     public static final String BACKUP_KEY = "backup";
 
@@ -257,7 +257,7 @@ public class Constants {
 
     public static final String PROMPT_KEY = "prompt";
 
-    public static final String DEFAULT_PROMPT = "dubbo>";
+    public static final String DEFAULT_PROMPT = "trf>";
 
     public static final String CODEC_KEY = "codec";
 
@@ -337,7 +337,7 @@ public class Constants {
 
     public static final String REVISION_KEY = "revision";
 
-    public static final String DUBBO_VERSION_KEY = "dubbo";
+    public static final String TRF_VERSION_KEY = "trf";
 
     public static final String HESSIAN_VERSION_KEY = "hessian.version";
 
@@ -514,9 +514,9 @@ public class Constants {
     public static final String CHANNEL_CALLBACK_KEY = "channel.callback.invokers.key";
 
     @Deprecated
-    public static final String SHUTDOWN_WAIT_SECONDS_KEY = "dubbo.service.shutdown.wait.seconds";
+    public static final String SHUTDOWN_WAIT_SECONDS_KEY = "trf.service.shutdown.wait.seconds";
 
-    public static final String SHUTDOWN_WAIT_KEY = "dubbo.service.shutdown.wait";
+    public static final String SHUTDOWN_WAIT_KEY = "trf.service.shutdown.wait";
 
     public static final String IS_SERVER_KEY = "isserver";
 
@@ -558,11 +558,11 @@ public class Constants {
 
     public static final String DEFAULT_SCRIPT_TYPE_KEY = "javascript";
 
-    public static final String STUB_EVENT_KEY = "dubbo.stub.event";
+    public static final String STUB_EVENT_KEY = "trf.stub.event";
 
     public static final boolean DEFAULT_STUB_EVENT = false;
 
-    public static final String STUB_EVENT_METHODS_KEY = "dubbo.stub.event.methods";
+    public static final String STUB_EVENT_METHODS_KEY = "trf.stub.event.methods";
 
     /**
      * When this attribute appears in invocation's attachment, mock invoker will be used
@@ -605,13 +605,13 @@ public class Constants {
 
     public static final String GENERIC_SERIALIZATION_BEAN = "bean";
 
-    public static final String DUBBO_IP_TO_REGISTRY = "DUBBO_IP_TO_REGISTRY";
+    public static final String trf_IP_TO_REGISTRY = "trf_IP_TO_REGISTRY";
 
-    public static final String DUBBO_PORT_TO_REGISTRY = "DUBBO_PORT_TO_REGISTRY";
+    public static final String trf_PORT_TO_REGISTRY = "trf_PORT_TO_REGISTRY";
 
-    public static final String DUBBO_IP_TO_BIND = "DUBBO_IP_TO_BIND";
+    public static final String trf_IP_TO_BIND = "trf_IP_TO_BIND";
 
-    public static final String DUBBO_PORT_TO_BIND = "DUBBO_PORT_TO_BIND";
+    public static final String trf_PORT_TO_BIND = "trf_PORT_TO_BIND";
 
     public static final String BIND_IP_KEY = "bind.ip";
 

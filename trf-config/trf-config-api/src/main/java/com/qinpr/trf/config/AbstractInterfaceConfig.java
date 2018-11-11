@@ -215,7 +215,7 @@ public abstract class AbstractInterfaceConfig extends  AbstractMethodConfig {
                     appendParameters(map, application);
                     appendParameters(map, config);
                     map.put("path", RegistryService.class.getName());
-                    map.put("dubbo", Version.getProtocolVersion());
+                    map.put("trf", Version.getProtocolVersion());
 
                     List<URL> urls = UrlUtils.parseURLs(address, map);
                     for (URL url : urls) {

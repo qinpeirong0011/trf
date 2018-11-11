@@ -17,7 +17,6 @@ public class JdkProxyFactory extends AbstractProxyFactory {
         return null;
     }
 
-    @Override
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) throws RpcException {
         return new AbstractProxyInvoker<T>(proxy, type, url) {
             @Override

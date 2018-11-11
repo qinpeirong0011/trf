@@ -486,4 +486,70 @@ public final class URL implements Serializable {
         }
         return value;
     }
+
+    public URL removeParameter(String key) {
+        if (key == null || key.length() == 0) {
+            return this;
+        }
+        return removeParameters(key);
+    }
+
+    public URL setPath(String path) {
+        return new URL(protocol, username, password, host, port, path, getParameters());
+    }
+
+    public String toServiceStringWithoutResolving() {
+        return buildString(true, false, false, true);
+    }
+
+    public boolean isAnyHost() {
+        return Constants.ANYHOST_VALUE.equals(host) || getParameter(Constants.ANYHOST_KEY, false);
+    }
+
+    public String getBackupAddress() {
+        return getBackupAddress(0);
+    }
+
+    public String getBackupAddress(int defaultPort) {
+        StringBuilder address = new StringBuilder(appendDefaultPort(getAddress(), defaultPort));
+        String[] backups = getParameter(Constants.BACKUP_KEY, new String[0]);
+        if (backups != null && backups.length > 0) {
+            for (String backup : backups) {
+                address.append(",");
+                address.append(appendDefaultPort(backup, defaultPort));
+            }
+        }
+        return address.toString();
+    }
+
+    private String appendDefaultPort(String address, int defaultPort) {
+        if (address != null && address.length() > 0
+                && defaultPort > 0) {
+            int i = address.indexOf(':');
+            if (i < 0) {
+                return address + ":" + defaultPort;
+            } else if (Integer.parseInt(address.substring(i + 1)) == 0) {
+                return address.substring(0, i + 1) + defaultPort;
+            }
+        }
+        return address;
+    }
+
+    public String[] getParameter(String key, String[] defaultValue) {
+        String value = getParameter(key);
+        if (value == null || value.length() == 0) {
+            return defaultValue;
+        }
+        return Constants.COMMA_SPLIT_PATTERN.split(value);
+    }
+
+    public String getAuthority() {
+        if ((username == null || username.length() == 0)
+                && (password == null || password.length() == 0)) {
+            return null;
+        }
+        return (username == null ? "" : username)
+                + ":" + (password == null ? "" : password);
+    }
 }
+

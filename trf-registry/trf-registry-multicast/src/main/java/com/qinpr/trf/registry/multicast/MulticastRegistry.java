@@ -12,6 +12,7 @@ public class MulticastRegistry extends FailbackRegistry {
 
 
     public MulticastRegistry(URL url) {
+        super(url);
     }
 
     public URL getUrl() {
@@ -27,6 +28,10 @@ public class MulticastRegistry extends FailbackRegistry {
     }
 
     public void register(URL url) {
+
+    }
+
+    protected void doRegister(URL url) {
 
     }
 

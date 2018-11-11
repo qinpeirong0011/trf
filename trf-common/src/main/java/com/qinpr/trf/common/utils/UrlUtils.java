@@ -52,7 +52,7 @@ public class UrlUtils {
         }
         String defaultProtocol = defaults == null ? null : defaults.get("protocol");
         if (defaultProtocol == null || defaultProtocol.length() == 0) {
-            defaultProtocol = "dubbo";
+            defaultProtocol = "trf";
         }
         String defaultUsername = defaults == null ? null : defaults.get("username");
         String defaultPassword = defaults == null ? null : defaults.get("password");
