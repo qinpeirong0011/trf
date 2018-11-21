@@ -4,6 +4,7 @@ import com.qinpr.trf.config.ApplicationConfig;
 import com.qinpr.trf.config.ProtocolConfig;
 import com.qinpr.trf.config.ProviderConfig;
 import com.qinpr.trf.config.RegistryConfig;
+import com.qinpr.trf.config.spring.ReferenceBean;
 import com.qinpr.trf.config.spring.ServiceBean;
 import com.qinpr.trf.config.spring.schema.handler.*;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
@@ -19,6 +20,7 @@ public class TrfNamespaceHandler extends NamespaceHandlerSupport {
         TrfBeanDefinitionParser.parseHolder.put(ProtocolConfig.class, ProtocolConfigParseHander.instanceOf());
         TrfBeanDefinitionParser.parseHolder.put(ProviderConfig.class, ProviderConfigParseHander.instanceOf());
         TrfBeanDefinitionParser.parseHolder.put(ServiceBean.class, ServiceBeanParseHandler.instanceOf());
+        TrfBeanDefinitionParser.parseHolder.put(ReferenceBean.class, ReferenceBeanParseHandler.instanceOf());
     }
 
     public void init() {
@@ -27,5 +29,6 @@ public class TrfNamespaceHandler extends NamespaceHandlerSupport {
         registerBeanDefinitionParser("protocol", new TrfBeanDefinitionParser(ProtocolConfig.class, true));
         registerBeanDefinitionParser("provider", new TrfBeanDefinitionParser(ProviderConfig.class, true));
         registerBeanDefinitionParser("service", new TrfBeanDefinitionParser(ServiceBean.class, true));
+        registerBeanDefinitionParser("reference", new TrfBeanDefinitionParser(ReferenceBean.class, true));
     }
 }

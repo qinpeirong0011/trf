@@ -1,4 +1,4 @@
-package com.qinpr.trf.test.spring.consumer;
+package com.qinpr.trf.test.spring.provider;
 
 import com.qinpr.trf.config.ApplicationConfig;
 import com.qinpr.trf.config.ProtocolConfig;
@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 @ContextConfiguration(locations = { "classpath:trf-provider.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
-public class ConsumerConfiguration {
+public class Provider {
 
     @Autowired
     @Qualifier("test-application")

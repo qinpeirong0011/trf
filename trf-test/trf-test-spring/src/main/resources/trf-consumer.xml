@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 	xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:trf="http://www.test.com/schema/trf"
+          xsi:schemaLocation="
+	        http://www.springframework.org/schema/beans
+	        http://www.springframework.org/schema/beans/spring-beans.xsd
+	        http://www.test.com/schema/trf
+            http://www.test.com/schema/trf.xsd ">
+
+    <!-- consumer's application name, used for tracing dependency relationship (not a matching criterion),
+    don't set it same as provider -->
+    <trf:application id="test-application-c" name="demo-consumer"/>
+
+    <!-- use multicast registry center to discover service -->
+    <trf:registry id="test-registry-c" address="zookeeper://127.0.0.1:2181"/>
+
+    <!-- generate proxy for the remote service, then demoService can be used in the same way as the
+    local regular interface -->
+    <trf:reference id="demoService" check="false" interface="com.qinpr.trf.demo.DemoService"/>
+
+</beans>

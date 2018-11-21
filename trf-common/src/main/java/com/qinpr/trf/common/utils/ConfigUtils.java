@@ -17,4 +17,12 @@ public class ConfigUtils {
                 || "default".equalsIgnoreCase(value);
     }
 
+    public static String getSystemProperty(String key) {
+        String value = System.getenv(key);
+        if (value == null || value.length() == 0) {
+            value = System.getProperty(key);
+        }
+        return value;
+    }
+
 }

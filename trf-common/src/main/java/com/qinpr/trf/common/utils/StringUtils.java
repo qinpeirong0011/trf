@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,6 +113,26 @@ public final class StringUtils {
             sb.append(s);
         }
         return sb.toString();
+    }
+
+    public static String toQueryString(Map<String, String> ps) {
+        StringBuilder buf = new StringBuilder();
+        if (ps != null && ps.size() > 0) {
+            for (Map.Entry<String, String> entry : new TreeMap<String, String>(ps).entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (key != null && key.length() > 0
+                        && value != null && value.length() > 0) {
+                    if (buf.length() > 0) {
+                        buf.append("&");
+                    }
+                    buf.append(key);
+                    buf.append("=");
+                    buf.append(value);
+                }
+            }
+        }
+        return buf.toString();
     }
 
 

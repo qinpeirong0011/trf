@@ -10,9 +10,9 @@
 
     <trf:application id="test-application" name="test-application"/>
 
-    <trf:registry id="test-registry" protocol="zookeeper_tujia" address="127.0.0.1:2181" group="trf" />
+    <trf:registry id="test-registry" protocol="zookeeper_tujia" address="zookeeper://127.0.0.1:2181" group="trf" />
 
-    <trf:protocol id="test-protocol" name="trf" port="20777"/>
+    <trf:protocol id="test-protocol" name="trf" port="20776"/>
 
     <trf:provider id="test-provider" executes="200" threads="200" token="true" timeout="3000"/>
 

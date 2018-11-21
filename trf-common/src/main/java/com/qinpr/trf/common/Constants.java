@@ -605,13 +605,13 @@ public class Constants {
 
     public static final String GENERIC_SERIALIZATION_BEAN = "bean";
 
-    public static final String trf_IP_TO_REGISTRY = "trf_IP_TO_REGISTRY";
+    public static final String TRF_IP_TO_REGISTRY = "TRF_IP_TO_REGISTRY";
 
-    public static final String trf_PORT_TO_REGISTRY = "trf_PORT_TO_REGISTRY";
+    public static final String TRF_PORT_TO_REGISTRY = "TRF_PORT_TO_REGISTRY";
 
-    public static final String trf_IP_TO_BIND = "trf_IP_TO_BIND";
+    public static final String TRF_IP_TO_BIND = "TRF_IP_TO_BIND";
 
-    public static final String trf_PORT_TO_BIND = "trf_PORT_TO_BIND";
+    public static final String TRF_PORT_TO_BIND = "TRF_PORT_TO_BIND";
 
     public static final String BIND_IP_KEY = "bind.ip";
 

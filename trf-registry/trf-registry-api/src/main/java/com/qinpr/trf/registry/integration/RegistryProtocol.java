@@ -18,6 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RegistryProtocol implements Protocol {
 
+    private static RegistryProtocol INSTANCE;
+
+    private Cluster cluster;
     private Protocol protocol;
     private RegistryFactory registryFactory;
 
@@ -34,8 +37,12 @@ public class RegistryProtocol implements Protocol {
 
     private final Map<String, ExporterChangeableWrapper<?>> bounds = new ConcurrentHashMap<String, ExporterChangeableWrapper<?>>();
 
+    public RegistryProtocol() {
+        INSTANCE = this;
+    }
+
     public int getDefaultPort() {
-        return 0;
+        return 9090;
     }
 
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
@@ -47,7 +54,7 @@ public class RegistryProtocol implements Protocol {
         if (register) {
             register(registryUrl, registeredProviderUrl);
         }
-        return null;
+        return new DestroyableExporter(exporter, invoker);
     }
 
     private <T> ExporterChangeableWrapper<T> doLocalExport(final Invoker<T> originInvoker) {
@@ -112,6 +119,9 @@ public class RegistryProtocol implements Protocol {
     }
 
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
+        url = url.setProtocol(url.getParameter(Constants.REGISTRY_KEY, Constants.DEFAULT_REGISTRY)).removeParameter(Constants.REGISTRY_KEY);
+        Registry registry = registryFactory.getRegistry(url);
+
         return null;
     }
 
@@ -184,6 +194,27 @@ public class RegistryProtocol implements Protocol {
     public void register(URL registryUrl, URL registedProviderUrl) {
         Registry registry = registryFactory.getRegistry(registryUrl);
         registry.register(registedProviderUrl);
+    }
+
+    static private class DestroyableExporter<T> implements Exporter<T> {
+        private Exporter<T> exporter;
+        private Invoker<T> originInvoker;
+
+        public DestroyableExporter(Exporter<T> exporter, Invoker<T> originInvoker) {
+            this.exporter = exporter;
+            this.originInvoker = originInvoker;
+        }
+
+        @Override
+        public Invoker<T> getInvoker() {
+            return exporter.getInvoker();
+        }
+
+        @Override
+        public void unexport() {
+            Registry registry = RegistryProtocol.INSTANCE.getRegistry(originInvoker);
+
+        }
     }
 
 
