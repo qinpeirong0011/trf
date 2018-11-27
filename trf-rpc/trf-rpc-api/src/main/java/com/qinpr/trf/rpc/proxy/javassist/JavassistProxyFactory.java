@@ -1,11 +1,13 @@
 package com.qinpr.trf.rpc.proxy.javassist;
 
 import com.qinpr.trf.common.URL;
+import com.qinpr.trf.common.bytecode.Proxy;
 import com.qinpr.trf.common.bytecode.Wrapper;
 import com.qinpr.trf.rpc.Invoker;
 import com.qinpr.trf.rpc.RpcException;
 import com.qinpr.trf.rpc.proxy.AbstractProxyFactory;
 import com.qinpr.trf.rpc.proxy.AbstractProxyInvoker;
+import com.qinpr.trf.rpc.proxy.InvokerInvocationHandler;
 
 /**
  * Created by qinpr on 2018/10/19.
@@ -13,7 +15,7 @@ import com.qinpr.trf.rpc.proxy.AbstractProxyInvoker;
 public class JavassistProxyFactory extends AbstractProxyFactory {
     @Override
     public <T> T getProxy(Invoker<T> invoker, Class<?>[] types) {
-        return null;
+        return (T) Proxy.getProxy(types).newInstance(new InvokerInvocationHandler(invoker));
     }
 
 

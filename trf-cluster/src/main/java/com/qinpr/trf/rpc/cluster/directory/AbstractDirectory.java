@@ -52,4 +52,8 @@ public abstract class AbstractDirectory<T> implements Directory<T> {
         Collections.sort(routers);
         this.routers = routers;
     }
+
+    public void setConsumerUrl(URL consumerUrl) {
+        this.consumerUrl = consumerUrl;
+    }
 }

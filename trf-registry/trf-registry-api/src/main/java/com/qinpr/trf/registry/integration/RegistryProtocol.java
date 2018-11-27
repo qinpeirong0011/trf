@@ -152,7 +152,12 @@ public class RegistryProtocol implements Protocol {
             registry.register(subscribeUrl.addParameters(Constants.CATEGORY_KEY, Constants.CONSUMERS_CATEGORY,
                     Constants.CHECK_KEY, String.valueOf(false)));
         }
-        return null;
+        directory.subscribe(subscribeUrl.addParameter(Constants.CATEGORY_KEY,
+                Constants.PROVIDERS_CATEGORY
+                        + "," + Constants.CONFIGURATORS_CATEGORY
+                        + "," + Constants.ROUTERS_CATEGORY));
+        Invoker<T> invoker = cluster.join(directory);
+        return invoker;
     }
 
     public void destroy() {
@@ -181,6 +186,10 @@ public class RegistryProtocol implements Protocol {
 
         URL providerUrl = URL.valueOf(export);
         return providerUrl;
+    }
+
+    public void setCluster(Cluster cluster) {
+        this.cluster = cluster;
     }
 
     private class ExporterChangeableWrapper<T> implements Exporter<T> {

@@ -3,14 +3,11 @@ package com.qinpr.trf.common.bytecode;
 import com.qinpr.trf.common.utils.ClassHelper;
 import com.qinpr.trf.common.utils.ReflectUtils;
 import javassist.*;
+import javassist.Modifier;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.security.ProtectionDomain;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -81,6 +78,39 @@ public class ClassGenerator {
         return this;
     }
 
+    public ClassGenerator addConstructor(int mod, Class<?>[] pts, Class<?>[] ets, String body) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(modifier(mod)).append(' ').append(SIMPLE_NAME_TAG);
+        sb.append('(');
+        for (int i = 0; i < pts.length; i++) {
+            if (i > 0) {
+                sb.append(',');
+            }
+            sb.append(ReflectUtils.getName(pts[i]));
+            sb.append(" arg").append(i);
+        }
+        sb.append(')');
+        if (ets != null && ets.length > 0) {
+            sb.append(" throws ");
+            for (int i = 0; i < ets.length; i++) {
+                if (i > 0) {
+                    sb.append(',');
+                }
+                sb.append(ReflectUtils.getName(ets[i]));
+            }
+        }
+        sb.append('{').append(body).append('}');
+        return addConstructor(sb.toString());
+    }
+
+    public ClassGenerator addConstructor(String code) {
+        if (mConstructors == null) {
+            mConstructors = new LinkedList<String>();
+        }
+        mConstructors.add(code);
+        return this;
+    }
+
     public ClassGenerator addField(String code) {
         if (mFields == null) {
             mFields = new ArrayList<String>();
@@ -95,6 +125,54 @@ public class ClassGenerator {
         }
         mMethods.add(code);
         return this;
+    }
+
+    public ClassGenerator addMethod(String name, int mod, Class<?> rt, Class<?>[] pts, Class<?>[] ets,
+                                    String body) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(modifier(mod)).append(' ').append(ReflectUtils.getName(rt)).append(' ').append(name);
+        sb.append('(');
+        for (int i = 0; i < pts.length; i++) {
+            if (i > 0) {
+                sb.append(',');
+            }
+            sb.append(ReflectUtils.getName(pts[i]));
+            sb.append(" arg").append(i);
+        }
+        sb.append(')');
+        if (ets != null && ets.length > 0) {
+            sb.append(" throws ");
+            for (int i = 0; i < ets.length; i++) {
+                if (i > 0) {
+                    sb.append(',');
+                }
+                sb.append(ReflectUtils.getName(ets[i]));
+            }
+        }
+        sb.append('{').append(body).append('}');
+        return addMethod(sb.toString());
+    }
+
+    private static String modifier(int mod) {
+        StringBuilder modifier = new StringBuilder();
+        if (java.lang.reflect.Modifier.isPublic(mod)) {
+            modifier.append("public");
+        }
+        if (java.lang.reflect.Modifier.isProtected(mod)) {
+            modifier.append("protected");
+        }
+        if (java.lang.reflect.Modifier.isPrivate(mod)) {
+            modifier.append("private");
+        }
+
+        if (java.lang.reflect.Modifier.isStatic(mod)) {
+            modifier.append(" static");
+        }
+        if (java.lang.reflect.Modifier.isVolatile(mod)) {
+            modifier.append(" volatile");
+        }
+
+        return modifier.toString();
     }
 
     public Class<?> toClass() {
@@ -198,6 +276,18 @@ public class ClassGenerator {
         if (mCopyConstructors != null) {
             mCopyConstructors.clear();
         }
+    }
+
+    public ClassGenerator addInterface(Class<?> cl) {
+        return addInterface(cl.getName());
+    }
+
+    public ClassGenerator addInterface(String cn) {
+        if (mInterfaces == null) {
+            mInterfaces = new HashSet<String>();
+        }
+        mInterfaces.add(cn);
+        return this;
     }
 
 }

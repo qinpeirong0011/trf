@@ -60,7 +60,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
 
     @Override
     public URL getUrl() {
-        return null;
+        return overrideDirectoryUrl;
     }
 
     @Override
@@ -128,6 +128,11 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
 
     public void setRegistry(Registry registry) {
         this.registry = registry;
+    }
+
+    public void subscribe(URL url) {
+        setConsumerUrl(url);
+        registry.subscribe(url, this);
     }
 
     public static List<Configurator> toConfigurators(List<URL> urls) {

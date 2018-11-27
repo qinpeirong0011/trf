@@ -9,6 +9,7 @@ import com.qinpr.trf.common.utils.NetUtils;
 import com.qinpr.trf.common.utils.StringUtils;
 import com.qinpr.trf.rpc.Invoker;
 import com.qinpr.trf.rpc.Protocol;
+import com.qinpr.trf.rpc.ProxyFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,8 @@ import java.util.Map;
 public class ReferenceConfig<T> extends AbstractReferenceConfig {
 
     private static final Protocol refprotocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
+
+    private static final ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
 
     private String interfaceName;
     private Class<?> interfaceClass;
@@ -125,9 +128,10 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         }
         if (urls.size() == 1) {
             invoker = refprotocol.refer(interfaceClass, urls.get(0));
+        } else {
+            //todo sth
         }
-
-        return null;
+        return (T) proxyFactory.getProxy(invoker);
     }
 
 

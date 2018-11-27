@@ -14,6 +14,6 @@ public class FailoverCluster implements Cluster {
 
 
     public <T> Invoker<T> join(Directory<T> directory) throws RpcException {
-        return null;
+        return new FailoverClusterInvoker<T>(directory);
     }
 }
