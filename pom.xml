@@ -16,6 +16,7 @@
         <module>trf-test</module>
         <module>trf-registry</module>
         <module>trf-remoting</module>
+        <module>trf-cluster</module>
     </modules>
 
 

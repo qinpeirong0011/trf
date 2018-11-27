@@ -1,6 +1,7 @@
 package com.qinpr.trf.registry.multicast;
 
 import com.qinpr.trf.common.URL;
+import com.qinpr.trf.registry.NotifyListener;
 import com.qinpr.trf.registry.support.FailbackRegistry;
 
 import java.util.List;
@@ -32,6 +33,11 @@ public class MulticastRegistry extends FailbackRegistry {
     }
 
     protected void doRegister(URL url) {
+
+    }
+
+    @Override
+    protected void doSubscribe(URL url, NotifyListener listener) {
 
     }
 

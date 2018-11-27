@@ -11,6 +11,8 @@ public interface RegistryService {
 
     void register(URL url);
 
+    void subscribe(URL url, NotifyListener listener);
+
     void unregister(URL url);
 
     List<URL> lookup(URL url);

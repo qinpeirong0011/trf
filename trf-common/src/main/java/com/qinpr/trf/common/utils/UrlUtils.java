@@ -125,4 +125,8 @@ public class UrlUtils {
         }
         return u;
     }
+
+    public static boolean isMatch(URL consumerUrl, URL providerUrl) {
+        return true;
+    }
 }

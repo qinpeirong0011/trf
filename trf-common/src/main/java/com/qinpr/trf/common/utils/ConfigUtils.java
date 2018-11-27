@@ -25,4 +25,8 @@ public class ConfigUtils {
         return value;
     }
 
+    public static boolean isNotEmpty(String value) {
+        return !isEmpty(value);
+    }
+
 }

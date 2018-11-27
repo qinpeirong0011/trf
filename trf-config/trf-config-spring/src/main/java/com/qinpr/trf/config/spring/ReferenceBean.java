@@ -62,7 +62,7 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
                && (getApplication() == null || getApplication().getRegistries() == null || getApplication().getRegistries().isEmpty())) {
            Map<String, RegistryConfig> registryConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, RegistryConfig.class, false, false);
            if (registryConfigMap != null && registryConfigMap.size() > 0) {
-               List<RegistryConfig> registryConfigs = new ArrayList<>();
+               List<RegistryConfig> registryConfigs = new ArrayList<RegistryConfig>();
                for (RegistryConfig config : registryConfigMap.values()) {
                    registryConfigs.add(config);
                }

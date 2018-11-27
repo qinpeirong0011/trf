@@ -1,0 +1,1 @@
+failover=com.qinpr.trf.rpc.cluster.support.FailoverCluster

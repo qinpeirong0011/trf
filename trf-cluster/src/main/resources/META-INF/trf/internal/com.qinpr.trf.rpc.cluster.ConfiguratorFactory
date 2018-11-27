@@ -1,0 +1,2 @@
+override=com.qinpr.trf.rpc.cluster.configurator.override.OverrideConfiguratorFactory
+absent=com.qinpr.trf.rpc.cluster.configurator.absent.AbsentConfiguratorFactory

@@ -2,6 +2,8 @@ package com.qinpr.trf.remoting.zookeeper.curator;
 
 import com.qinpr.trf.common.Constants;
 import com.qinpr.trf.common.URL;
+import com.qinpr.trf.common.utils.StringUtils;
+import com.qinpr.trf.remoting.zookeeper.ChildListener;
 import com.qinpr.trf.remoting.zookeeper.StateListener;
 import com.qinpr.trf.remoting.zookeeper.support.AbstractZookeeperClient;
 import org.apache.curator.framework.CuratorFramework;
@@ -12,6 +14,10 @@ import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.WatchedEvent;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by qinpr on 2018/11/10.
@@ -78,6 +84,22 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
         return false;
     }
 
+    @Override
+    protected CuratorWatcher createTargetChildListener(String path, ChildListener listener) {
+        return new CuratorWatcherImpl(listener);
+    }
+
+    @Override
+    protected List<String> addTargetChildListener(String path, CuratorWatcher curatorWatcher) {
+        try {
+            return client.getChildren().usingWatcher(curatorWatcher).forPath(path);
+        } catch (KeeperException.NoNodeException e) {
+            return null;
+        } catch (Exception e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
     protected void stateChanged(int state) {
         for (StateListener sessionListener : getSessionListeners()) {
             sessionListener.stateChanged(state);
@@ -86,5 +108,33 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
 
     public boolean isConnected() {
         return client.getZookeeperClient().isConnected();
+    }
+
+
+    private class CuratorWatcherImpl implements CuratorWatcher {
+
+        private volatile ChildListener listener;
+
+        public CuratorWatcherImpl(ChildListener listener) {
+            this.listener = listener;
+        }
+
+        public void unwatch() {
+            this.listener = null;
+        }
+
+        @Override
+        public void process(WatchedEvent event) throws Exception {
+            if (listener != null) {
+                String path = event.getPath() == null ? "" : event.getPath();
+                listener.childChanged(path,
+                        // if path is null, curator using watcher will throw NullPointerException.
+                        // if client connect or disconnect to server, zookeeper will queue
+                        // watched event(Watcher.Event.EventType.None, .., path = null).
+                        StringUtils.isNotEmpty(path)
+                                ? client.getChildren().usingWatcher(this).forPath(path)
+                                : Collections.<String>emptyList());
+            }
+        }
     }
 }

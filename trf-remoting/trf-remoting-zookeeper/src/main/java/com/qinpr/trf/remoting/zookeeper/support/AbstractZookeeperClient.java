@@ -1,10 +1,14 @@
 package com.qinpr.trf.remoting.zookeeper.support;
 
 import com.qinpr.trf.common.URL;
+import com.qinpr.trf.remoting.zookeeper.ChildListener;
 import com.qinpr.trf.remoting.zookeeper.StateListener;
 import com.qinpr.trf.remoting.zookeeper.ZookeeperClient;
 
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -15,6 +19,8 @@ public abstract class AbstractZookeeperClient<TargetChildListener> implements Zo
     private final URL url;
 
     private final Set<StateListener> stateListeners = new CopyOnWriteArraySet<StateListener>();
+
+    private final ConcurrentMap<String, ConcurrentMap<ChildListener, TargetChildListener>> childListeners = new ConcurrentHashMap<String, ConcurrentMap<ChildListener, TargetChildListener>>();
 
     public AbstractZookeeperClient(URL url) {
         this.url = url;
@@ -54,4 +60,23 @@ public abstract class AbstractZookeeperClient<TargetChildListener> implements Zo
     protected abstract void createEphemeral(String path);
 
     protected abstract boolean checkExists(String path);
+
+    @Override
+    public List<String> addChildListener(String path, ChildListener listener) {
+        ConcurrentMap<ChildListener, TargetChildListener> listeners = childListeners.get(path);
+        if (listeners == null) {
+            childListeners.putIfAbsent(path, new ConcurrentHashMap<ChildListener, TargetChildListener>());
+            listeners = childListeners.get(path);
+        }
+        TargetChildListener targetListener = listeners.get(listener);
+        if (targetListener == null) {
+            listeners.putIfAbsent(listener, createTargetChildListener(path, listener));
+            targetListener = listeners.get(listener);
+        }
+        return addTargetChildListener(path, targetListener);
+    }
+
+    protected abstract TargetChildListener createTargetChildListener(String path, ChildListener listener);
+
+    protected abstract List<String> addTargetChildListener(String path, TargetChildListener listener);
 }

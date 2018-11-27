@@ -428,6 +428,13 @@ public final class URL implements Serializable {
         return new URL(protocol, username, password, host, port, path, map);
     }
 
+    public URL removeParameters(Collection<String> keys) {
+        if (keys == null || keys.isEmpty()) {
+            return this;
+        }
+        return removeParameters(keys.toArray(new String[0]));
+    }
+
     public String getParameterAndDecoded(String key) {
         return getParameterAndDecoded(key, null);
     }
@@ -550,6 +557,62 @@ public final class URL implements Serializable {
         }
         return (username == null ? "" : username)
                 + ":" + (password == null ? "" : password);
+    }
+
+    public URL clearParameters() {
+        return new URL(protocol, username, password, host, port, path, new HashMap<String, String>());
+    }
+
+    public URL addParameters(Map<String, String> parameters) {
+        if (parameters == null || parameters.size() == 0) {
+            return this;
+        }
+
+        boolean hasAndEqual = true;
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String value = getParameters().get(entry.getKey());
+            if (value == null) {
+                if (entry.getValue() != null) {
+                    hasAndEqual = false;
+                    break;
+                }
+            } else {
+                if (!value.equals(entry.getValue())) {
+                    hasAndEqual = false;
+                    break;
+                }
+            }
+        }
+        // return immediately if there's no change
+        if (hasAndEqual) return this;
+
+        Map<String, String> map = new HashMap<String, String>(getParameters());
+        map.putAll(parameters);
+        return new URL(protocol, username, password, host, port, path, map);
+    }
+
+    public URL addParameters(String... pairs) {
+        if (pairs == null || pairs.length == 0) {
+            return this;
+        }
+        if (pairs.length % 2 != 0) {
+            throw new IllegalArgumentException("Map pairs can not be odd number.");
+        }
+        Map<String, String> map = new HashMap<String, String>();
+        int len = pairs.length / 2;
+        for (int i = 0; i < len; i++) {
+            map.put(pairs[2 * i], pairs[2 * i + 1]);
+        }
+        return addParameters(map);
+    }
+
+    public URL addParametersIfAbsent(Map<String, String> parameters) {
+        if (parameters == null || parameters.size() == 0) {
+            return this;
+        }
+        Map<String, String> map = new HashMap<String, String>(parameters);
+        map.putAll(getParameters());
+        return new URL(protocol, username, password, host, port, path, map);
     }
 }
 
