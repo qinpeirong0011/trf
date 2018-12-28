@@ -28,12 +28,12 @@ public class RpcResult extends AbstractResult {
 
     @Override
     public Object recreate() throws Throwable {
-        return null;
+        return result;
     }
 
     @Override
     public Object getResult() {
-        return null;
+        return result;
     }
 
     @Override

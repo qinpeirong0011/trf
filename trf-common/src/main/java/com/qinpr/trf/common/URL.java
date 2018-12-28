@@ -125,6 +125,20 @@ public final class URL implements Serializable {
         return value;
     }
 
+    public long getParameter(String key, long defaultValue) {
+        Number n = getNumbers().get(key);
+        if (n != null) {
+            return n.longValue();
+        }
+        String value = getParameter(key);
+        if (value == null || value.length() == 0) {
+            return defaultValue;
+        }
+        long l = Long.parseLong(value);
+        getNumbers().put(key, l);
+        return l;
+    }
+
     public String getParameter(String key, String defaultValue) {
         String value = getParameter(key);
         if (value == null || value.length() == 0) {
@@ -614,5 +628,45 @@ public final class URL implements Serializable {
         map.putAll(getParameters());
         return new URL(protocol, username, password, host, port, path, map);
     }
+
+    public String getMethodParameter(String method, String key, String defaultValue) {
+        String value = getMethodParameter(method, key);
+        if (value == null || value.length() == 0) {
+            return defaultValue;
+        }
+        return value;
+    }
+
+    public boolean getMethodParameter(String method, String key, boolean defaultValue) {
+        String value = getMethodParameter(method, key);
+        if (value == null || value.length() == 0) {
+            return defaultValue;
+        }
+        return Boolean.parseBoolean(value);
+    }
+
+    public int getMethodParameter(String method, String key, int defaultValue) {
+        String methodKey = method + "." + key;
+        Number n = getNumbers().get(methodKey);
+        if (n != null) {
+            return n.intValue();
+        }
+        String value = getMethodParameter(method, key);
+        if (value == null || value.length() == 0) {
+            return defaultValue;
+        }
+        int i = Integer.parseInt(value);
+        getNumbers().put(methodKey, i);
+        return i;
+    }
+
+    public String getMethodParameter(String method, String key) {
+        String value = parameters.get(method + "." + key);
+        if (value == null || value.length() == 0) {
+            return getParameter(key);
+        }
+        return value;
+    }
+
 }
 

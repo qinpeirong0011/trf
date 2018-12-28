@@ -1,6 +1,7 @@
 package com.qinpr.trf.rpc.proxy;
 
 import com.qinpr.trf.rpc.Invoker;
+import com.qinpr.trf.rpc.RpcInvocation;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -18,6 +19,9 @@ public class InvokerInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return null;
+        String methodName = method.getName();
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        RpcInvocation invocation = new RpcInvocation(method, args);
+        return invoker.invoke(invocation).recreate();
     }
 }

@@ -1,5 +1,6 @@
 package com.qinpr.trf.common.utils;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,5 +19,9 @@ public class CollectionUtils {
             }
         }
         return parameters;
+    }
+
+    public static boolean isNotEmpty(Collection<?> collection) {
+        return collection != null && !collection.isEmpty();
     }
 }

@@ -3,8 +3,12 @@ package com.qinpr.trf.rpc.cluster.directory;
 import com.qinpr.trf.common.Constants;
 import com.qinpr.trf.common.URL;
 import com.qinpr.trf.common.extension.ExtensionLoader;
+import com.qinpr.trf.rpc.Invocation;
+import com.qinpr.trf.rpc.Invoker;
+import com.qinpr.trf.rpc.RpcException;
 import com.qinpr.trf.rpc.cluster.Directory;
 import com.qinpr.trf.rpc.cluster.Router;
+import com.qinpr.trf.rpc.cluster.router.MockInvokersSelector;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +18,8 @@ import java.util.List;
  * Created by qinpr on 2018/11/21.
  */
 public abstract class AbstractDirectory<T> implements Directory<T> {
+
+    private volatile boolean destroyed = false;
 
     private final URL url;
 
@@ -48,7 +54,7 @@ public abstract class AbstractDirectory<T> implements Directory<T> {
 //            routers.add(routerFactory.getRouter(url));
         }
         // append mock invoker selector
-//        routers.add(new MockInvokersSelector());
+        routers.add(new MockInvokersSelector());
         Collections.sort(routers);
         this.routers = routers;
     }
@@ -56,4 +62,49 @@ public abstract class AbstractDirectory<T> implements Directory<T> {
     public void setConsumerUrl(URL consumerUrl) {
         this.consumerUrl = consumerUrl;
     }
+
+    @Override
+    public List<Invoker<T>> list(Invocation invocation) throws RpcException {
+        if (destroyed) {
+            throw new RpcException("Directory already destroyed .url: " + getUrl());
+        }
+        List<Invoker<T>> invokers = doList(invocation);
+        List<Router> localRouters = this.routers;
+        if (localRouters != null && !localRouters.isEmpty()) {
+            for (Router router : localRouters) {
+                try {
+                    if (router.getUrl() == null || router.getUrl().getParameter(Constants.RUNTIME_KEY, false)) {
+                        invokers = router.route(invokers, getConsumerUrl(), invocation);
+                    }
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        }
+        return invokers;
+    }
+
+    public List<Router> getRouters() {
+        return routers;
+    }
+
+    public URL getConsumerUrl() {
+        return consumerUrl;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+    @Override
+    public void destroy() {
+        destroyed = true;
+    }
+
+    @Override
+    public URL getUrl() {
+        return url;
+    }
+
+    protected abstract List<Invoker<T>> doList(Invocation invocation) throws RpcException;
 }
