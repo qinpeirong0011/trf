@@ -19,8 +19,6 @@ public class InvokerInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        String methodName = method.getName();
-        Class<?>[] parameterTypes = method.getParameterTypes();
         RpcInvocation invocation = new RpcInvocation(method, args);
         return invoker.invoke(invocation).recreate();
     }

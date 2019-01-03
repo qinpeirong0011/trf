@@ -3,6 +3,7 @@ package com.qinpr.trf.rpc.protocol.trf;
 import com.qinpr.trf.common.Constants;
 import com.qinpr.trf.common.URL;
 import com.qinpr.trf.common.extension.ExtensionLoader;
+import com.qinpr.trf.common.utils.ConcurrentHashSet;
 import com.qinpr.trf.remoting.RemotingException;
 import com.qinpr.trf.remoting.exchange.ExchangeHandler;
 import com.qinpr.trf.remoting.exchange.ExchangeServer;
@@ -15,6 +16,7 @@ import com.qinpr.trf.rpc.protocol.AbstractProtocol;
 import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,6 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TrfProtocol extends AbstractProtocol {
 
     private final Map<String, ExchangeServer> serverMap = new ConcurrentHashMap<String, ExchangeServer>();
+
+    protected final Set<Invoker<?>> invokers = new ConcurrentHashSet<Invoker<?>>();
 
     private ExchangeHandler requestHandler = new ExchangeHandlerAdapter() {
         @Override

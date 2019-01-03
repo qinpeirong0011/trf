@@ -7,6 +7,9 @@ import java.util.Map;
  */
 public class RpcResult extends AbstractResult {
 
+    public RpcResult() {
+    }
+
     public RpcResult(Object result) {
         this.result = result;
     }

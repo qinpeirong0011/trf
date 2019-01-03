@@ -14,6 +14,19 @@ public class RemotingException extends Exception {
     public RemotingException() {
     }
 
+    public RemotingException(Channel channel, String msg) {
+        this(channel == null ? null : channel.getLocalAddress(), channel == null ? null : channel.getRemoteAddress(),
+                msg);
+    }
+
+    public RemotingException(InetSocketAddress localAddress, InetSocketAddress remoteAddress, String message) {
+        super(message);
+
+        this.localAddress = localAddress;
+        this.remoteAddress = remoteAddress;
+    }
+
+
     public RemotingException(InetSocketAddress localAddress, InetSocketAddress remoteAddress, String message,
                              Throwable cause) {
         super(message, cause);
