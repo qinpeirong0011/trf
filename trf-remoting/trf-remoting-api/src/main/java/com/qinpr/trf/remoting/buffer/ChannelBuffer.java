@@ -30,4 +30,10 @@ public interface ChannelBuffer extends Comparable<ChannelBuffer> {
     void getBytes(int index, ByteBuffer dst);
 
     void getBytes(int index, ChannelBuffer dst);
+
+    int readerIndex();
+
+    void readerIndex(int readerIndex);
+
+    boolean readable();
 }

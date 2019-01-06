@@ -2,6 +2,7 @@ package com.qinpr.trf.remoting;
 
 import com.qinpr.trf.common.URL;
 import com.qinpr.trf.common.extension.ExtensionLoader;
+import com.qinpr.trf.remoting.transport.ChannelHandlerAdapter;
 import com.qinpr.trf.remoting.transport.ChannelHandlerDispatcher;
 
 /**
@@ -26,5 +27,20 @@ public class Transporters {
 
     public static Transporter getTransporter() {
         return ExtensionLoader.getExtensionLoader(Transporter.class).getAdaptiveExtension();
+    }
+
+    public static Client connect(URL url, ChannelHandler... handlers) throws RemotingException {
+        if (url == null) {
+            throw new IllegalArgumentException("url == null");
+        }
+        ChannelHandler handler;
+        if (handlers == null || handlers.length == 0) {
+            handler = new ChannelHandlerAdapter();
+        } else if (handlers.length == 1) {
+            handler = handlers[0];
+        } else {
+            handler = new ChannelHandlerDispatcher(handlers);
+        }
+        return getTransporter().connect(url, handler);
     }
 }

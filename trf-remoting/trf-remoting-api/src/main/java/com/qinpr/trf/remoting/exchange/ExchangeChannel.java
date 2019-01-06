@@ -13,4 +13,6 @@ public interface ExchangeChannel extends Channel {
     ResponseFuture request(Object request, int timeout) throws RemotingException;
 
     void close(int timeout);
+
+    ExchangeHandler getExchangeHandler();
 }

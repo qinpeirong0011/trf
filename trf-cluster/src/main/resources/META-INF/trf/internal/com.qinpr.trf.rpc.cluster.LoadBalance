@@ -1,1 +1,1 @@
-random=ocom.qinpr.trf.rpc.cluster.loadbalance.RandomLoadBalance
+random=com.qinpr.trf.rpc.cluster.loadbalance.RandomLoadBalance

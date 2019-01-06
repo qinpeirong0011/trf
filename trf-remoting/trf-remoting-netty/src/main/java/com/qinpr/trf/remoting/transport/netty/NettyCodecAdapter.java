@@ -3,9 +3,17 @@ package com.qinpr.trf.remoting.transport.netty;
 import com.qinpr.trf.common.Constants;
 import com.qinpr.trf.common.URL;
 import com.qinpr.trf.remoting.Codec2;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.*;
-import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
+import com.qinpr.trf.remoting.buffer.ChannelBuffer;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
+
+import java.io.IOException;
+import java.util.List;
+
 
 /**
  * Created by qinpr on 2018/11/1.
@@ -40,22 +48,59 @@ public class NettyCodecAdapter {
         return decoder;
     }
 
-    private class InternalEncoder extends OneToOneEncoder {
+    private class InternalEncoder extends MessageToByteEncoder {
+
         @Override
-        protected Object encode(ChannelHandlerContext channelHandlerContext, Channel channel, Object o) throws Exception {
-            return null;
+        protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
+            ChannelBuffer buffer = new NettyBackedChannelBuffer(out);
+            Channel ch = ctx.channel();
+            NettyChannel channel = NettyChannel.getOrAddChannel(ch, url, handler);
+            try {
+                codec.encode(channel, buffer, msg);
+            } finally {
+                NettyChannel.removeChannelIfDisconnected(ch);
+            }
         }
     }
 
-    private class InternalDecoder extends SimpleChannelUpstreamHandler {
-        @Override
-        public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-            super.messageReceived(ctx, e);
-        }
+    private class InternalDecoder extends ByteToMessageDecoder {
 
         @Override
-        public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-            super.exceptionCaught(ctx, e);
+        protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> out) throws Exception {
+
+            ChannelBuffer message = new NettyBackedChannelBuffer(input);
+
+            NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
+
+            Object msg;
+
+            int saveReaderIndex;
+
+            try {
+                // decode object.
+                do {
+                    saveReaderIndex = message.readerIndex();
+                    try {
+                        msg = codec.decode(channel, message);
+                    } catch (IOException e) {
+                        throw e;
+                    }
+                    if (msg == Codec2.DecodeResult.NEED_MORE_INPUT) {
+                        message.readerIndex(saveReaderIndex);
+                        break;
+                    } else {
+                        //is it possible to go here ?
+                        if (saveReaderIndex == message.readerIndex()) {
+                            throw new IOException("Decode without read data.");
+                        }
+                        if (msg != null) {
+                            out.add(msg);
+                        }
+                    }
+                } while (message.readable());
+            } finally {
+                NettyChannel.removeChannelIfDisconnected(ctx.channel());
+            }
         }
     }
 }

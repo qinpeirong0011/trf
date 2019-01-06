@@ -343,7 +343,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
                         invoker = new InvokerDelegate<T>(protocol.refer(serviceType, url), url, providerUrl);
                     }
                 } catch (Throwable t) {
-
+                    t.printStackTrace();
                 }
                 if (invoker != null) { // Put new invoker in cache
                     newUrlInvokerMap.put(key, invoker);

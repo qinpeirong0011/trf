@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
  */
 public abstract class AbstractServer extends AbstractEndpoint implements Server {
 
+    protected static final String SERVER_THREAD_POOL_NAME = "TrfServerHandler";
     private InetSocketAddress localAddress;
     private InetSocketAddress bindAddress;
     private int accepts;

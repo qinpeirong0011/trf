@@ -13,6 +13,10 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
 
     private final ExchangeHandler handler;
 
+    public static String KEY_READ_TIMESTAMP = HeartbeatHandler.KEY_READ_TIMESTAMP;
+
+    public static String KEY_WRITE_TIMESTAMP = HeartbeatHandler.KEY_WRITE_TIMESTAMP;
+
     public HeaderExchangeHandler(ExchangeHandler handler) {
         if (handler == null) {
             throw new IllegalArgumentException("handler == null");

@@ -4,7 +4,10 @@ import com.qinpr.trf.common.Constants;
 import com.qinpr.trf.common.URL;
 import com.qinpr.trf.common.extension.ExtensionLoader;
 import com.qinpr.trf.common.utils.ConcurrentHashSet;
+import com.qinpr.trf.common.utils.StringUtils;
 import com.qinpr.trf.remoting.RemotingException;
+import com.qinpr.trf.remoting.Transporter;
+import com.qinpr.trf.remoting.exchange.ExchangeClient;
 import com.qinpr.trf.remoting.exchange.ExchangeHandler;
 import com.qinpr.trf.remoting.exchange.ExchangeServer;
 import com.qinpr.trf.remoting.exchange.Exchangers;
@@ -19,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 /**
@@ -27,6 +31,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TrfProtocol extends AbstractProtocol {
 
     private final Map<String, ExchangeServer> serverMap = new ConcurrentHashMap<String, ExchangeServer>();
+
+    private final Map<String, ReferenceCountExchangeClient> referenceClientMap = new ConcurrentHashMap<String, ReferenceCountExchangeClient>(); // <host:port,Exchanger>
+
+    private final ConcurrentMap<String, LazyConnectExchangeClient> ghostClientMap = new ConcurrentHashMap<String, LazyConnectExchangeClient>();
+
+    private final ConcurrentMap<String, Object> locks = new ConcurrentHashMap<String, Object>();
 
     protected final Set<Invoker<?>> invokers = new ConcurrentHashSet<Invoker<?>>();
 
@@ -82,7 +92,89 @@ public class TrfProtocol extends AbstractProtocol {
     }
 
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
-        return null;
+        TrfInvoker<T> invoker = new TrfInvoker<T>(type, url, getClients(url), invokers);
+        invokers.add(invoker);
+        return invoker;
+    }
+
+    private ExchangeClient[] getClients(URL url) {
+        // whether to share connection
+        boolean service_share_connect = false;
+        int connections = url.getParameter(Constants.CONNECTIONS_KEY, 0);
+        // if not configured, connection is shared, otherwise, one connection for one service
+        if (connections == 0) {
+            service_share_connect = true;
+            connections = 1;
+        }
+
+        ExchangeClient[] clients = new ExchangeClient[connections];
+        for (int i = 0; i < clients.length; i++) {
+            if (service_share_connect) {
+                clients[i] = getSharedClient(url);
+            } else {
+                clients[i] = initClient(url);
+            }
+        }
+        return clients;
+    }
+
+    private ExchangeClient getSharedClient(URL url) {
+        String key = url.getAddress();
+        ReferenceCountExchangeClient client = referenceClientMap.get(key);
+        if (client != null) {
+            if (!client.isClosed()) {
+                client.incrementAndGetCount();
+                return client;
+            } else {
+                referenceClientMap.remove(key);
+            }
+        }
+
+        locks.putIfAbsent(key, new Object());
+        synchronized (locks.get(key)) {
+            if (referenceClientMap.containsKey(key)) {
+                return referenceClientMap.get(key);
+            }
+
+            ExchangeClient exchangeClient = initClient(url);
+            client = new ReferenceCountExchangeClient(exchangeClient, ghostClientMap);
+            referenceClientMap.put(key, client);
+            ghostClientMap.remove(key);
+            locks.remove(key);
+            return client;
+        }
+    }
+
+    /**
+     * Create new connection
+     */
+    private ExchangeClient initClient(URL url) {
+
+        // client type setting.
+        String str = url.getParameter(Constants.CLIENT_KEY, url.getParameter(Constants.SERVER_KEY, Constants.DEFAULT_REMOTING_CLIENT));
+
+        url = url.addParameter(Constants.CODEC_KEY, "trf");
+        // enable heartbeat by default
+        url = url.addParameterIfAbsent(Constants.HEARTBEAT_KEY, String.valueOf(Constants.DEFAULT_HEARTBEAT));
+
+        // BIO is not allowed since it has severe performance issue.
+        if (str != null && str.length() > 0 && !ExtensionLoader.getExtensionLoader(Transporter.class).hasExtension(str)) {
+            throw new RpcException("Unsupported client type: " + str + "," +
+                    " supported client type is " + StringUtils.join(ExtensionLoader.getExtensionLoader(Transporter.class).getSupportedExtensions(), " "));
+        }
+
+        ExchangeClient client;
+        try {
+            // connection should be lazy
+            if (url.getParameter(Constants.LAZY_CONNECT_KEY, false)) {
+                client = new LazyConnectExchangeClient(url, requestHandler);
+            } else {
+                client = Exchangers.connect(url, requestHandler);
+            }
+        } catch (RemotingException e) {
+            throw new RpcException("Fail to create remoting client for service(" + url + "): " + e.getMessage(), e);
+        }
+        return client;
     }
 
     public void destroy() {

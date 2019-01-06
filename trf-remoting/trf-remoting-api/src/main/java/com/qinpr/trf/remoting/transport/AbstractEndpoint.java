@@ -93,4 +93,8 @@ public class AbstractEndpoint extends AbstractPeer implements Resetable {
     public Codec2 getCodec() {
         return codec;
     }
+
+    protected int getConnectTimeout() {
+        return connectTimeout;
+    }
 }

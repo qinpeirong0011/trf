@@ -276,6 +276,10 @@ public final class URL implements Serializable {
         return new URL(protocol, username, password, host, port, path, map);
     }
 
+    public URL addParameter(String key, boolean value) {
+        return addParameter(key, String.valueOf(value));
+    }
+
     public String toFullString() {
         if (full != null) {
             return full;

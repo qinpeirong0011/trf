@@ -1,10 +1,7 @@
 package com.qinpr.trf.common.utils;
 
 import java.io.IOException;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 
@@ -144,5 +141,9 @@ public class NetUtils {
                 || host.equalsIgnoreCase("localhost")
                 || host.equals("0.0.0.0")
                 || (LOCAL_IP_PATTERN.matcher(host).matches());
+    }
+
+    public static String toAddressString(InetSocketAddress address) {
+        return address.getAddress().getHostAddress() + ":" + address.getPort();
     }
 }

@@ -7,7 +7,7 @@ import com.qinpr.trf.remoting.RemotingException;
 /**
  * Created by qinpr on 2018/10/26.
  */
-public class AbstractChannelHandlerDelegate implements ChannelHandlerDelegate {
+public abstract class AbstractChannelHandlerDelegate implements ChannelHandlerDelegate {
     protected ChannelHandler handler;
 
     protected AbstractChannelHandlerDelegate(ChannelHandler handler) {

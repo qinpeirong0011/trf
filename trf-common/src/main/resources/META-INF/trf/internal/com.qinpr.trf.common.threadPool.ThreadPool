@@ -1,0 +1,2 @@
+fixed=com.qinpr.trf.common.threadPool.support.fixed.FixedThreadPool
+cached=com.qinpr.trf.common.threadPool.support.cached.CachedThreadPool
