@@ -45,4 +45,5 @@ public interface Channel extends Endpoint {
      * @param key key.
      */
     void removeAttribute(String key);
+
 }

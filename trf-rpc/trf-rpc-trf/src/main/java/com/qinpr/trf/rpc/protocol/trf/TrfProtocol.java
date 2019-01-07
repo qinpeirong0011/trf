@@ -4,20 +4,17 @@ import com.qinpr.trf.common.Constants;
 import com.qinpr.trf.common.URL;
 import com.qinpr.trf.common.extension.ExtensionLoader;
 import com.qinpr.trf.common.utils.ConcurrentHashSet;
+import com.qinpr.trf.common.utils.NetUtils;
 import com.qinpr.trf.common.utils.StringUtils;
+import com.qinpr.trf.remoting.Channel;
 import com.qinpr.trf.remoting.RemotingException;
 import com.qinpr.trf.remoting.Transporter;
-import com.qinpr.trf.remoting.exchange.ExchangeClient;
-import com.qinpr.trf.remoting.exchange.ExchangeHandler;
-import com.qinpr.trf.remoting.exchange.ExchangeServer;
-import com.qinpr.trf.remoting.exchange.Exchangers;
+import com.qinpr.trf.remoting.exchange.*;
 import com.qinpr.trf.remoting.exchange.support.ExchangeHandlerAdapter;
-import com.qinpr.trf.rpc.Exporter;
-import com.qinpr.trf.rpc.Invoker;
-import com.qinpr.trf.rpc.RpcException;
+import com.qinpr.trf.rpc.*;
 import com.qinpr.trf.rpc.protocol.AbstractProtocol;
-import org.omg.PortableInterceptor.INACTIVE;
 
+import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -30,6 +27,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class TrfProtocol extends AbstractProtocol {
 
+    public static final int DEFAULT_PORT = 20880;
+    private static final String IS_CALLBACK_SERVICE_INVOKE = "_isCallBackServiceInvoke";
+
     private final Map<String, ExchangeServer> serverMap = new ConcurrentHashMap<String, ExchangeServer>();
 
     private final Map<String, ReferenceCountExchangeClient> referenceClientMap = new ConcurrentHashMap<String, ReferenceCountExchangeClient>(); // <host:port,Exchanger>
@@ -41,11 +41,105 @@ public class TrfProtocol extends AbstractProtocol {
     protected final Set<Invoker<?>> invokers = new ConcurrentHashSet<Invoker<?>>();
 
     private ExchangeHandler requestHandler = new ExchangeHandlerAdapter() {
+
         @Override
-        public CompletableFuture<Object> reply(ExchangeHandler channel, Object request) throws RemotingException {
-            return super.reply(channel, request);
+        public CompletableFuture<Object> reply(ExchangeChannel channel, Object message) throws RemotingException {
+            if (message instanceof Invocation) {
+                Invocation inv = (Invocation) message;
+                Invoker<?> invoker = getInvoker(channel, inv);
+                // need to consider backward-compatibility if it's a callback
+                if (Boolean.TRUE.toString().equals(inv.getAttachments().get(IS_CALLBACK_SERVICE_INVOKE))) {
+                    String methodsStr = invoker.getUrl().getParameters().get("methods");
+                    boolean hasMethod = false;
+                    if (methodsStr == null || !methodsStr.contains(",")) {
+                        hasMethod = inv.getMethodName().equals(methodsStr);
+                    } else {
+                        String[] methods = methodsStr.split(",");
+                        for (String method : methods) {
+                            if (inv.getMethodName().equals(method)) {
+                                hasMethod = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!hasMethod) {
+//                        logger.warn(new IllegalStateException("The methodName " + inv.getMethodName()
+//                                + " not found in callback service interface ,invoke will be ignored."
+//                                + " please update the api interface. url is:"
+//                                + invoker.getUrl()) + " ,invocation is :" + inv);
+                        return null;
+                    }
+                    RpcContext rpcContext = RpcContext.getContext();
+//                    boolean supportServerAsync = invoker.getUrl().getMethodParameter(inv.getMethodName(), Constants.ASYNC_KEY, false);
+//                    if (supportServerAsync) {
+//                        CompletableFuture<Object> future = new CompletableFuture<>();
+//                        rpcContext.setAsyncContext(new AsyncContextImpl(future));
+//                    }
+//                    rpcContext.setRemoteAddress(channel.getRemoteAddress());
+//                    Result result = invoker.invoke(inv);
+//
+//                    if (result instanceof AsyncRpcResult) {
+//                        return ((AsyncRpcResult) result).getResultFuture().thenApply(r -> (Object) r);
+//                    } else {
+//                        return CompletableFuture.completedFuture(result);
+//                    }
+                }
+
+            }
+            throw new RemotingException(channel, "Unsupported request: "
+                    + (message == null ? null : (message.getClass().getName() + ": " + message))
+                    + ", channel: consumer: " + channel.getRemoteAddress() + " --> provider: " + channel.getLocalAddress());
+        }
+
+        @Override
+        public void connected(Channel channel) throws RemotingException {
+            super.connected(channel);
+        }
+
+        @Override
+        public void disconnected(Channel channel) throws RemotingException {
+            super.disconnected(channel);
+        }
+
+        @Override
+        public void received(Channel channel, Object message) throws RemotingException {
+            super.received(channel, message);
         }
     };
+
+    Invoker<?> getInvoker(Channel channel, Invocation inv) throws RemotingException {
+        boolean isCallBackServiceInvoke = false;
+        boolean isStubServiceInvoke = false;
+        int port = channel.getLocalAddress().getPort();
+        String path = inv.getAttachments().get(Constants.PATH_KEY);
+        // if it's callback service on client side
+        isStubServiceInvoke = Boolean.TRUE.toString().equals(inv.getAttachments().get(Constants.STUB_EVENT_KEY));
+        if (isStubServiceInvoke) {
+            port = channel.getRemoteAddress().getPort();
+        }
+        //callback
+        isCallBackServiceInvoke = isClientSide(channel) && !isStubServiceInvoke;
+        if (isCallBackServiceInvoke) {
+            path = inv.getAttachments().get(Constants.PATH_KEY) + "." + inv.getAttachments().get(Constants.CALLBACK_SERVICE_KEY);
+            inv.getAttachments().put(IS_CALLBACK_SERVICE_INVOKE, Boolean.TRUE.toString());
+        }
+        String serviceKey = serviceKey(port, path, inv.getAttachments().get(Constants.VERSION_KEY), inv.getAttachments().get(Constants.GROUP_KEY));
+
+        TrfExporter<?> exporter = (TrfExporter<?>) exporterMap.get(serviceKey);
+
+        if (exporter == null)
+            throw new RemotingException(channel, "Not found exported service: " + serviceKey + " in " + exporterMap.keySet() + ", may be version or group mismatch " + ", channel: consumer: " + channel.getRemoteAddress() + " --> provider: " + channel.getLocalAddress() + ", message:" + inv);
+
+        return exporter.getInvoker();
+    }
+
+    private boolean isClientSide(Channel channel) {
+        InetSocketAddress address = channel.getRemoteAddress();
+        URL url = channel.getUrl();
+        return url.getPort() == address.getPort() &&
+                NetUtils.filterLocalHost(channel.getUrl().getIp())
+                        .equals(NetUtils.filterLocalHost(address.getAddress().getHostAddress()));
+    }
 
     public int getDefaultPort() {
         return 0;
@@ -186,4 +280,5 @@ public class TrfProtocol extends AbstractProtocol {
         return serviceKey(port, url.getPath(), url.getParameter(Constants.VERSION_KEY),
                 url.getParameter(Constants.GROUP_KEY));
     }
+
 }

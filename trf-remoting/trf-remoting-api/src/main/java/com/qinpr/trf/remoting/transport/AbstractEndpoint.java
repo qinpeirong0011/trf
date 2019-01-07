@@ -46,15 +46,8 @@ public class AbstractEndpoint extends AbstractPeer implements Resetable {
         return null;
     }
 
-    public void send(Object message) throws RemotingException {
-
-    }
 
     public void send(Object message, boolean sent) throws RemotingException {
-
-    }
-
-    public void close() {
 
     }
 

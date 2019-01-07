@@ -1,12 +1,12 @@
 package com.qinpr.trf.remoting.exchange.support.header;
 
 import com.qinpr.trf.common.URL;
-import com.qinpr.trf.remoting.Channel;
-import com.qinpr.trf.remoting.ChannelHandler;
-import com.qinpr.trf.remoting.RemotingException;
+import com.qinpr.trf.common.Version;
+import com.qinpr.trf.remoting.*;
 import com.qinpr.trf.remoting.exchange.ExchangeChannel;
 import com.qinpr.trf.remoting.exchange.ExchangeHandler;
 import com.qinpr.trf.remoting.exchange.ResponseFuture;
+import com.qinpr.trf.remoting.exchange.support.DefaultFuture;
 
 import java.net.InetSocketAddress;
 
@@ -30,7 +30,7 @@ public class HeaderExchangeChannel implements ExchangeChannel {
 
     @Override
     public InetSocketAddress getRemoteAddress() {
-        return null;
+        return channel.getRemoteAddress();
     }
 
     @Override
@@ -75,12 +75,25 @@ public class HeaderExchangeChannel implements ExchangeChannel {
 
     @Override
     public void send(Object message) throws RemotingException {
-
+        send(message, false);
     }
 
     @Override
     public void send(Object message, boolean sent) throws RemotingException {
-
+        if (closed) {
+            throw new RemotingException(this.getLocalAddress(), null, "Failed to send message " + message + ", cause: The channel " + this + " is closed!");
+        }
+        if (message instanceof Request
+                || message instanceof Response
+                || message instanceof String) {
+            channel.send(message, sent);
+        } else {
+            Request request = new Request();
+            request.setVersion(Version.getProtocolVersion());
+            request.setTwoWay(false);
+            request.setData(message);
+            channel.send(request, sent);
+        }
     }
 
     @Override
@@ -95,7 +108,22 @@ public class HeaderExchangeChannel implements ExchangeChannel {
 
     @Override
     public ResponseFuture request(Object request, int timeout) throws RemotingException {
-        return null;
+        if (closed) {
+            throw new RemotingException(this.getLocalAddress(), null, "Failed to send request " + request + ", cause: The channel " + this + " is closed!");
+        }
+        // create request.
+        Request req = new Request();
+        req.setVersion(Version.getProtocolVersion());
+        req.setTwoWay(true);
+        req.setData(request);
+        DefaultFuture future = DefaultFuture.newFuture(channel, req, timeout);
+        try {
+            channel.send(req);
+        } catch (RemotingException e) {
+            future.cancel();
+            throw e;
+        }
+        return future;
     }
 
     @Override

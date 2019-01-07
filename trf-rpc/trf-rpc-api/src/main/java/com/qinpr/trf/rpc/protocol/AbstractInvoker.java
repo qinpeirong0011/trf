@@ -125,6 +125,7 @@ public abstract class AbstractInvoker<T> implements Invoker<T> {
                 throw e;
             }
         } catch (Throwable e) {
+            e.printStackTrace();
             return new RpcResult(e);
         }
     }

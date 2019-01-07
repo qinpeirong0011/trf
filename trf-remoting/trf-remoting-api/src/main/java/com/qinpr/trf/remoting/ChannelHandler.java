@@ -2,6 +2,8 @@ package com.qinpr.trf.remoting;
 
 import com.qinpr.trf.common.extension.SPI;
 
+import java.net.InetSocketAddress;
+
 /**
  * Created by qinpr on 2018/10/25.
  */
@@ -44,4 +46,5 @@ public interface ChannelHandler {
      * @param exception exception.
      */
     void caught(Channel channel, Throwable exception) throws RemotingException;
+
 }

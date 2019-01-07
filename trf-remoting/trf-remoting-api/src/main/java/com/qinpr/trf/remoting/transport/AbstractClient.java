@@ -6,11 +6,13 @@ import com.qinpr.trf.common.extension.ExtensionLoader;
 import com.qinpr.trf.common.utils.ExecutorUtil;
 import com.qinpr.trf.common.utils.NamedThreadFactory;
 import com.qinpr.trf.common.utils.NetUtils;
+import com.qinpr.trf.remoting.Channel;
 import com.qinpr.trf.remoting.ChannelHandler;
 import com.qinpr.trf.remoting.Client;
 import com.qinpr.trf.remoting.RemotingException;
 import com.qinpr.trf.remoting.transport.dispatcher.ChannelHandlers;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -188,5 +190,30 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         return ChannelHandlers.wrap(handler, url);
     }
 
+    @Override
+    public void send(Object message, boolean sent) throws RemotingException {
+        if (send_reconnect && !isConnected()) {
+            connect();
+        }
+        Channel channel = getChannel();
+        //TODO Can the value returned by getChannel() be null? need improvement.
+        if (channel == null || !channel.isConnected()) {
+            throw new RemotingException(this, "message can not send, because channel is closed . url:" + getUrl());
+        }
+        channel.send(message, sent);
+    }
 
+    protected abstract Channel getChannel();
+
+    public InetSocketAddress getConnectAddress() {
+        return new InetSocketAddress(NetUtils.filterLocalHost(getUrl().getHost()), getUrl().getPort());
+    }
+
+    @Override
+    public boolean isConnected() {
+        Channel channel = getChannel();
+        if (channel == null)
+            return false;
+        return channel.isConnected();
+    }
 }

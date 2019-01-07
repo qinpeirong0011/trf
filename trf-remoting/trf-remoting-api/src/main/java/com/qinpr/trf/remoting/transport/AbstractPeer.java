@@ -1,5 +1,6 @@
 package com.qinpr.trf.remoting.transport;
 
+import com.qinpr.trf.common.Constants;
 import com.qinpr.trf.common.URL;
 import com.qinpr.trf.remoting.Channel;
 import com.qinpr.trf.remoting.ChannelHandler;
@@ -16,6 +17,8 @@ public abstract class AbstractPeer implements Endpoint, ChannelHandler {
     private final ChannelHandler handler;
 
     private volatile URL url;
+
+    private volatile boolean closed;
 
     public AbstractPeer(URL url, ChannelHandler handler) {
         if (url == null) {
@@ -45,17 +48,12 @@ public abstract class AbstractPeer implements Endpoint, ChannelHandler {
 
     @Override
     public void send(Object message) throws RemotingException {
-
-    }
-
-    @Override
-    public void send(Object message, boolean sent) throws RemotingException {
-
+        send(message, url.getParameter(Constants.SENT_KEY, false));
     }
 
     @Override
     public void close() {
-
+         closed = true;
     }
 
     @Override
@@ -70,7 +68,7 @@ public abstract class AbstractPeer implements Endpoint, ChannelHandler {
 
     @Override
     public boolean isClosed() {
-        return false;
+        return closed;
     }
 
     @Override
@@ -97,4 +95,5 @@ public abstract class AbstractPeer implements Endpoint, ChannelHandler {
     public void caught(Channel channel, Throwable exception) throws RemotingException {
 
     }
+
 }

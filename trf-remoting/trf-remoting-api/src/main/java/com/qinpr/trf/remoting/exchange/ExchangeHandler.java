@@ -12,5 +12,5 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface ExchangeHandler extends ChannelHandler, TelnetHandler {
 
-    CompletableFuture<Object> reply(ExchangeHandler channel, Object request) throws RemotingException;
+    CompletableFuture<Object> reply(ExchangeChannel channel, Object request) throws RemotingException;
 }
